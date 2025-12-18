@@ -216,6 +216,34 @@ def get_progress_bar(percent: int, length: int = 10) -> str:
     filled = int(length * percent / 100)
     return "█" * filled + "░" * (length - filled)
 
+# Этапы генерации с процентами
+GENERATION_STAGES = [
+    {"name": "Анализ сайта", "icon": "🔍", "start": 0, "end": 20},
+    {"name": "Сбор данных", "icon": "📊", "start": 20, "end": 45},
+    {"name": "Генерация документов", "icon": "📄", "start": 45, "end": 85},
+    {"name": "Финализация", "icon": "✅", "start": 85, "end": 100}
+]
+
+def get_current_stage(percent: int) -> dict:
+    """Определяет текущий этап по проценту"""
+    for stage in GENERATION_STAGES:
+        if stage["start"] <= percent < stage["end"]:
+            return stage
+    return GENERATION_STAGES[-1]
+
+def get_stages_visual(percent: int) -> str:
+    """Генерирует визуальное отображение этапов"""
+    lines = []
+    for stage in GENERATION_STAGES:
+        if percent >= stage["end"]:
+            status = "✅"
+        elif percent >= stage["start"]:
+            status = "⏳"
+        else:
+            status = "⬜"
+        lines.append(f"{status} {stage['icon']} {stage['name']}")
+    return "\n".join(lines)
+
 # ═══════════════════════════════════════════════════════════════
 # СООБЩЕНИЯ JARVIS
 # ═══════════════════════════════════════════════════════════════
