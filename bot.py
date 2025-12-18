@@ -3,6 +3,7 @@
 🤖 JARVIS - BIMAR Presale Intelligence System
 Advanced AI-powered presale assistant for BIMAR sales team.
 Inspired by Iron Man's JARVIS - Just A Rather Very Intelligent System.
+Version 2.1 - With interactive menu system
 """
 
 import asyncio
@@ -20,13 +21,15 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import (
     FSInputFile, 
     ReplyKeyboardMarkup, 
     KeyboardButton, 
     ReplyKeyboardRemove,
     InlineKeyboardMarkup,
-    InlineKeyboardButton
+    InlineKeyboardButton,
+    CallbackQuery
 )
 from aiogram.enums import ParseMode
 
@@ -43,6 +46,10 @@ ALLOWED_USER_IDS = os.getenv("ALLOWED_USER_IDS", "").split(",") if os.getenv("AL
 QUICK_MODE = os.getenv("QUICK_MODE", "0") == "1"
 TASK_TIMEOUT = int(os.getenv("TASK_TIMEOUT", "1500"))
 POLLING_INTERVAL = int(os.getenv("POLLING_INTERVAL", "10"))
+
+# In-memory storage for user tasks history
+user_tasks_history: Dict[int, List[Dict]] = {}
+user_settings: Dict[int, Dict] = {}
 
 # Expected artifacts with descriptions
 EXPECTED_ARTIFACTS = {
@@ -101,6 +108,129 @@ class PresaleForm(StatesGroup):
     processing = State()
 
 
+class SettingsForm(StatesGroup):
+    waiting_for_setting = State()
+
+
+class JarvisMenus:
+    """JARVIS menu keyboards."""
+    
+    @staticmethod
+    def get_main_menu() -> ReplyKeyboardMarkup:
+        """Main menu with Reply keyboard."""
+        return ReplyKeyboardMarkup(
+            keyboard=[
+                [
+                    KeyboardButton(text="🚀 Новый анализ"),
+                    KeyboardButton(text="📊 Мои задачи")
+                ],
+                [
+                    KeyboardButton(text="⚙️ Настройки"),
+                    KeyboardButton(text="📈 Статус")
+                ],
+                [
+                    KeyboardButton(text="📖 Справка")
+                ]
+            ],
+            resize_keyboard=True,
+            is_persistent=True
+        )
+    
+    @staticmethod
+    def get_goal_keyboard() -> ReplyKeyboardMarkup:
+        """Goal selection keyboard."""
+        return ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="🎯 Вводная/квалификация")],
+                [KeyboardButton(text="🚀 Согласование пилота")],
+                [KeyboardButton(text="💼 ТКП")],
+                [KeyboardButton(text="🔙 Главное меню")]
+            ],
+            resize_keyboard=True,
+            one_time_keyboard=True
+        )
+    
+    @staticmethod
+    def get_settings_inline() -> InlineKeyboardMarkup:
+        """Settings inline keyboard."""
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="⚡ Quick Mode: ВКЛ" if QUICK_MODE else "⚡ Quick Mode: ВЫКЛ",
+                        callback_data="toggle_quick_mode"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="🔔 Уведомления",
+                        callback_data="settings_notifications"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="🌐 Язык интерфейса",
+                        callback_data="settings_language"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="🔙 Назад",
+                        callback_data="back_to_menu"
+                    )
+                ]
+            ]
+        )
+    
+    @staticmethod
+    def get_task_actions(task_id: str) -> InlineKeyboardMarkup:
+        """Task actions inline keyboard."""
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="🔄 Повторить",
+                        callback_data=f"repeat_task:{task_id}"
+                    ),
+                    InlineKeyboardButton(
+                        text="📥 Скачать все",
+                        callback_data=f"download_all:{task_id}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="🗑️ Удалить",
+                        callback_data=f"delete_task:{task_id}"
+                    )
+                ]
+            ]
+        )
+    
+    @staticmethod
+    def get_back_to_menu() -> InlineKeyboardMarkup:
+        """Back to menu button."""
+        return InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="🔙 Главное меню",
+                        callback_data="back_to_menu"
+                    )
+                ]
+            ]
+        )
+    
+    @staticmethod
+    def get_cancel_keyboard() -> ReplyKeyboardMarkup:
+        """Cancel operation keyboard."""
+        return ReplyKeyboardMarkup(
+            keyboard=[
+                [KeyboardButton(text="❌ Отмена")]
+            ],
+            resize_keyboard=True
+        )
+
+
 class JarvisUI:
     """JARVIS-style UI components and messages."""
     
@@ -122,35 +252,51 @@ class JarvisUI:
         return msg.format(progress=progress)
     
     @staticmethod
-    def format_welcome() -> str:
-        return """
+    def format_welcome(user_name: str = "сэр") -> str:
+        greeting = random.choice(JARVIS_GREETINGS)
+        return f"""
 ╔══════════════════════════════════════╗
 ║  🤖 J.A.R.V.I.S. - BIMAR SYSTEM     ║
 ║  Just A Rather Very Intelligent      ║
 ║  Sales-assistant                     ║
 ╚══════════════════════════════════════╝
 
-Добро пожаловать в систему пресейл-аналитики BIMAR.
-
-Я помогу вам подготовить полный пакет документов для встречи с клиентом за несколько минут.
+{greeting}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 Что я умею:
-• Анализировать компанию по URL
-• Определять отрасль и специфику
-• Генерировать 7 ключевых документов
-• Рассчитывать ROI и сценарии
+🎯 **Возможности системы:**
+
+• 🚀 Анализ компании по URL
+• 📊 Генерация 7 документов
+• 💰 Расчет ROI
+• 📋 Подготовка к встрече
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📎 Отправьте URL сайта компании для начала анализа.
+Выберите действие в меню ниже 👇
+"""
+
+    @staticmethod
+    def format_new_analysis_prompt() -> str:
+        return """
+🚀 **НОВЫЙ АНАЛИЗ**
+
+┌─────────────────────────────────────┐
+│ Отправьте URL сайта компании        │
+│ для запуска пресейл-аналитики       │
+└─────────────────────────────────────┘
+
+📎 Пример: https://company.com
+
+💡 Я проанализирую компанию и подготовлю
+   полный пакет документов за 3-7 минут
 """
 
     @staticmethod
     def format_url_received(url: str) -> str:
         return f"""
-🔍 Цель обнаружена
+🔍 **Цель обнаружена**
 
 ┌─────────────────────────────────────┐
 │ 🌐 {url[:35]}{'...' if len(url) > 35 else ''}
@@ -162,27 +308,27 @@ class JarvisUI:
     @staticmethod
     def format_goal_selection() -> str:
         return """
-📋 Уточните параметры миссии
+📋 **Уточните параметры миссии**
 
 Выберите цель предстоящей встречи:
 
 ┌─────────────────────────────────────┐
-│ 1️⃣  Вводная / Квалификация         │
-│     Первый контакт с клиентом       │
+│ 🎯 **Вводная / Квалификация**       │
+│    Первый контакт с клиентом        │
 ├─────────────────────────────────────┤
-│ 2️⃣  Согласование пилота            │
-│     Обсуждение пилотного проекта    │
+│ 🚀 **Согласование пилота**          │
+│    Обсуждение пилотного проекта     │
 ├─────────────────────────────────────┤
-│ 3️⃣  ТКП                            │
-│     Техническо-коммерческое         │
-│     предложение                     │
+│ 💼 **ТКП**                          │
+│    Техническо-коммерческое          │
+│    предложение                      │
 └─────────────────────────────────────┘
 """
 
     @staticmethod
     def format_constraints_request() -> str:
         return """
-🔒 Ограничения и требования
+🔒 **Ограничения и требования**
 
 Укажите специфические требования клиента:
 
@@ -194,13 +340,13 @@ class JarvisUI:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 Отправьте "-" если ограничений нет
+💡 Отправьте **"-"** если ограничений нет
 """
 
     @staticmethod
     def format_processing_start(url: str, goal: str, constraints: str) -> str:
         return f"""
-⚡ JARVIS активирован
+⚡ **JARVIS активирован**
 
 ┌─────────────────────────────────────┐
 │ 🎯 МИССИЯ: Пресейл-аналитика       │
@@ -214,26 +360,25 @@ class JarvisUI:
 """
 
     @staticmethod
-    def format_task_created(task_id: str, task_url: str) -> str:
+    def format_task_created(task_id: str) -> str:
         return f"""
-✅ Задача создана в системе
+✅ **Задача создана**
 
 ┌─────────────────────────────────────┐
 │ 🆔 ID: {task_id[:20]}...
-│ 🔗 Мониторинг: Manus Dashboard
+│ 📡 Статус: В обработке
 └─────────────────────────────────────┘
 
-⏳ Ожидаемое время: 3-7 минут
+⏳ Ожидаемое время: **3-7 минут**
 
 Я сообщу, когда документы будут готовы.
 """
 
     @staticmethod
-    def format_progress(status: str, elapsed_seconds: int, phase: str = "") -> str:
+    def format_progress(status: str, elapsed_seconds: int) -> str:
         minutes = int(elapsed_seconds // 60)
         seconds = int(elapsed_seconds % 60)
         
-        # Progress bar
         phases = ["Сбор данных", "Анализ", "Генерация", "Финализация"]
         current_phase_idx = min(int(elapsed_seconds / 90), 3)
         current_phase = phases[current_phase_idx]
@@ -241,7 +386,7 @@ class JarvisUI:
         progress_bar = "█" * (current_phase_idx + 1) + "░" * (3 - current_phase_idx)
         
         return f"""
-🔄 Обработка запроса
+🔄 **Обработка запроса**
 
 ┌─────────────────────────────────────┐
 │ ⏱️ Время: {minutes:02d}:{seconds:02d}
@@ -253,9 +398,9 @@ class JarvisUI:
     @staticmethod
     def format_files_ready(file_count: int) -> str:
         return f"""
-📦 Пакет документов готов
+📦 **Пакет документов готов**
 
-Обнаружено файлов: {file_count}
+Обнаружено файлов: **{file_count}**
 
 ⬇️ Начинаю передачу...
 """
@@ -265,7 +410,7 @@ class JarvisUI:
         return f"📄 [{index}/{total}] {description}"
 
     @staticmethod
-    def format_completion(files_sent: int, total_expected: int, elapsed_time: str) -> str:
+    def format_completion(files_sent: int, total_expected: int, elapsed_time: str, company_name: str = "") -> str:
         status = "✅ ПОЛНЫЙ" if files_sent >= total_expected else f"⚠️ ЧАСТИЧНЫЙ ({files_sent}/{total_expected})"
         
         return f"""
@@ -274,6 +419,7 @@ class JarvisUI:
 ╚══════════════════════════════════════╝
 
 ┌─────────────────────────────────────┐
+│ 🏢 Компания: {company_name[:25] if company_name else 'Анализ завершен'}
 │ 📊 Статус: {status}
 │ 📁 Файлов: {files_sent}
 │ ⏱️ Время: {elapsed_time}
@@ -283,24 +429,87 @@ class JarvisUI:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 Отправьте новый URL для следующего анализа
-   или /help для справки
+Используйте меню для нового анализа 👇
 """
 
     @staticmethod
-    def format_error(error_type: str, details: str = "") -> str:
-        return f"""
-⚠️ Системное уведомление
+    def format_my_tasks(tasks: List[Dict]) -> str:
+        if not tasks:
+            return """
+📊 **МОИ ЗАДАЧИ**
 
 ┌─────────────────────────────────────┐
-│ ❌ Ошибка: {error_type}
-│ 📝 {details[:35] if details else 'Попробуйте позже'}
+│ 📭 История пуста                    │
+│                                     │
+│ Запустите первый анализ через       │
+│ кнопку "🚀 Новый анализ"            │
+└─────────────────────────────────────┘
+"""
+        
+        tasks_text = """
+📊 **МОИ ЗАДАЧИ**
+
+┌─────────────────────────────────────┐
+│ 📋 Последние запросы:               │
 └─────────────────────────────────────┘
 
-Рекомендации:
-• Проверьте URL
-• Попробуйте снова через минуту
-• Используйте /cancel для сброса
+"""
+        for i, task in enumerate(tasks[-5:], 1):  # Last 5 tasks
+            status_icon = "✅" if task.get("status") == "completed" else "⏳" if task.get("status") == "running" else "❌"
+            date = task.get("date", "")
+            url = task.get("url", "")[:30]
+            tasks_text += f"{i}. {status_icon} {url}{'...' if len(task.get('url', '')) > 30 else ''}\n"
+            tasks_text += f"   📅 {date}\n\n"
+        
+        tasks_text += """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 Нажмите на задачу для действий
+"""
+        return tasks_text
+
+    @staticmethod
+    def format_settings(user_id: int) -> str:
+        settings = user_settings.get(user_id, {})
+        quick_mode = settings.get("quick_mode", QUICK_MODE)
+        notifications = settings.get("notifications", True)
+        
+        return f"""
+⚙️ **НАСТРОЙКИ**
+
+┌─────────────────────────────────────┐
+│ ⚡ Quick Mode: {'✅ ВКЛ' if quick_mode else '❌ ВЫКЛ'}
+│    Пропуск вопросов о цели/огр.     │
+├─────────────────────────────────────┤
+│ 🔔 Уведомления: {'✅ ВКЛ' if notifications else '❌ ВЫКЛ'}
+│    Оповещения о статусе             │
+├─────────────────────────────────────┤
+│ 🌐 Язык: Русский                    │
+└─────────────────────────────────────┘
+
+Выберите параметр для изменения 👇
+"""
+
+    @staticmethod
+    def format_status() -> str:
+        return f"""
+╔══════════════════════════════════════╗
+║  📈 СТАТУС СИСТЕМЫ                  ║
+╚══════════════════════════════════════╝
+
+┌─────────────────────────────────────┐
+│ 🟢 JARVIS: **Онлайн**               │
+│ 🟢 Manus API: **Подключен**         │
+│ 🟢 Telegram: **Активен**            │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ ⏰ Время: {datetime.now().strftime('%H:%M:%S')}
+│ 📅 Дата: {datetime.now().strftime('%d.%m.%Y')}
+│ 🔧 Версия: 2.1
+└─────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖 JARVIS v2.1 | BIMAR SYSTEM
 """
 
     @staticmethod
@@ -310,72 +519,63 @@ class JarvisUI:
 ║  📖 СПРАВКА JARVIS                  ║
 ╚══════════════════════════════════════╝
 
-🎮 КОМАНДЫ:
+🎮 **ГЛАВНОЕ МЕНЮ:**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-/start   → Начать работу
-/help    → Эта справка
-/cancel  → Отменить операцию
-/status  → Статус системы
+🚀 **Новый анализ** → Запуск пресейла
+📊 **Мои задачи** → История запросов
+⚙️ **Настройки** → Параметры бота
+📈 **Статус** → Состояние системы
+📖 **Справка** → Эта страница
 
-📋 КАК ИСПОЛЬЗОВАТЬ:
+📋 **КАК ИСПОЛЬЗОВАТЬ:**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Отправьте URL сайта компании
-2. Выберите цель встречи
-3. Укажите ограничения (или "-")
-4. Дождитесь генерации (3-7 мин)
-5. Получите 7 документов
+1. Нажмите "🚀 Новый анализ"
+2. Отправьте URL сайта компании
+3. Выберите цель встречи
+4. Укажите ограничения (или "-")
+5. Дождитесь генерации (3-7 мин)
+6. Получите 7 документов
 
-📦 ГЕНЕРИРУЕМЫЕ ДОКУМЕНТЫ:
+📦 **ГЕНЕРИРУЕМЫЕ ДОКУМЕНТЫ:**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 Deal_Brief.pdf
-   Краткое описание сделки
-
 🗺️ Use_Case_Map.xlsx
-   Карта сценариев использования
-
 💰 ROI_Calc.xlsx
-   Калькулятор возврата инвестиций
-
 📝 Pilot_SOW.docx
-   ТЗ на пилотный проект
-
 🎯 MAP.xlsx
-   Mutual Action Plan
-
 📊 Mini_Deck.pptx
-   Мини-презентация
-
 📚 Sources.md
-   Источники и ссылки
+
+⌨️ **КОМАНДЫ:**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/start → Перезапуск бота
+/help → Справка
+/cancel → Отмена операции
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 JARVIS v2.0 | BIMAR SYSTEM
+🤖 JARVIS v2.1 | BIMAR SYSTEM
 """
 
     @staticmethod
-    def format_status() -> str:
+    def format_error(error_type: str, details: str = "") -> str:
         return f"""
-╔══════════════════════════════════════╗
-║  📊 СТАТУС СИСТЕМЫ                  ║
-╚══════════════════════════════════════╝
+⚠️ **Системное уведомление**
 
 ┌─────────────────────────────────────┐
-│ 🟢 JARVIS: Онлайн
-│ 🟢 Manus API: Подключен
-│ 🟢 Telegram: Активен
+│ ❌ Ошибка: {error_type}
+│ 📝 {details[:35] if details else 'Попробуйте позже'}
 └─────────────────────────────────────┘
 
-⏰ Время сервера: {datetime.now().strftime('%H:%M:%S')}
-📅 Дата: {datetime.now().strftime('%d.%m.%Y')}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 JARVIS v2.0 | Готов к работе
+Рекомендации:
+• Проверьте URL
+• Попробуйте снова через минуту
+• Используйте меню для навигации
 """
 
     @staticmethod
     def format_access_denied() -> str:
         return """
-⛔ ДОСТУП ЗАПРЕЩЁН
+⛔ **ДОСТУП ЗАПРЕЩЁН**
 
 ┌─────────────────────────────────────┐
 │ Ваш ID не авторизован в системе.   │
@@ -386,10 +586,10 @@ class JarvisUI:
     @staticmethod
     def format_cancel() -> str:
         return """
-🛑 Операция отменена
+🛑 **Операция отменена**
 
 Система готова к новому запросу.
-Отправьте URL для начала анализа.
+Используйте меню для навигации 👇
 """
 
 
@@ -418,7 +618,6 @@ class ManusAPIClient:
             response.raise_for_status()
             data = response.json()
             logger.info(f"Task created response: {data}")
-            logger.info(f"Task ID: {data.get('task_id')}")
             return data
         except Exception as e:
             logger.error(f"Error creating task: {e}")
@@ -438,7 +637,7 @@ class ManusAPIClient:
     
     @staticmethod
     def extract_files_from_response(response: Dict[str, Any]) -> List[Dict[str, str]]:
-        """Extract files from task response (recursive search)."""
+        """Extract files from task response."""
         files = []
         
         def search_files(obj):
@@ -464,6 +663,12 @@ def is_user_allowed(user_id: int) -> bool:
     if ALLOWED_USER_IDS is None:
         return True
     return str(user_id) in ALLOWED_USER_IDS
+
+
+def get_user_quick_mode(user_id: int) -> bool:
+    """Get user's quick mode setting."""
+    settings = user_settings.get(user_id, {})
+    return settings.get("quick_mode", QUICK_MODE)
 
 
 def build_prompt_adapter(url: str, goal: str = "вводная/квалификация", constraints: str = "неизвестно") -> str:
@@ -502,7 +707,6 @@ async def download_file(url: str, filename: str, max_retries: int = 3) -> Option
     download_dir = Path("downloads")
     download_dir.mkdir(exist_ok=True)
     
-    # Sanitize filename
     safe_filename = "".join(c for c in filename if c.isalnum() or c in "._- ").strip()
     if not safe_filename:
         safe_filename = f"file_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -538,7 +742,7 @@ async def wait_for_task_completion(
     bot: Bot,
     status_message: types.Message
 ) -> Optional[Dict[str, Any]]:
-    """Poll task status until completion with live updates."""
+    """Poll task status until completion."""
     start_time = datetime.now()
     last_update_time = start_time
     ui = JarvisUI()
@@ -548,9 +752,13 @@ async def wait_for_task_completion(
         
         if elapsed > TASK_TIMEOUT:
             logger.error(f"Task {task_id} timeout after {elapsed}s")
-            await status_message.edit_text(
-                ui.format_error("Таймаут", "Время ожидания истекло")
-            )
+            try:
+                await status_message.edit_text(
+                    ui.format_error("Таймаут", "Время ожидания истекло"),
+                    parse_mode=ParseMode.MARKDOWN
+                )
+            except:
+                pass
             return None
         
         try:
@@ -564,21 +772,25 @@ async def wait_for_task_completion(
                 return task_data
             elif status == "failed":
                 logger.error(f"Task {task_id} failed")
-                await status_message.edit_text(
-                    ui.format_error("Ошибка Manus", "Задача завершилась с ошибкой")
-                )
+                try:
+                    await status_message.edit_text(
+                        ui.format_error("Ошибка Manus", "Задача завершилась с ошибкой"),
+                        parse_mode=ParseMode.MARKDOWN
+                    )
+                except:
+                    pass
                 return None
             
-            # Update progress message every 30 seconds
             time_since_update = (datetime.now() - last_update_time).total_seconds()
             if time_since_update >= 30:
                 try:
                     await status_message.edit_text(
-                        ui.format_progress(status, elapsed)
+                        ui.format_progress(status, elapsed),
+                        parse_mode=ParseMode.MARKDOWN
                     )
                     last_update_time = datetime.now()
                 except Exception:
-                    pass  # Ignore edit errors
+                    pass
             
             await asyncio.sleep(POLLING_INTERVAL)
         
@@ -587,56 +799,137 @@ async def wait_for_task_completion(
             await asyncio.sleep(POLLING_INTERVAL)
 
 
-# Handlers
+# ==================== HANDLERS ====================
+
 async def start_handler(message: types.Message, state: FSMContext):
     """Handle /start command."""
     user_id = message.from_user.id
     ui = JarvisUI()
+    menus = JarvisMenus()
     
     if not is_user_allowed(user_id):
         await message.answer(ui.format_access_denied())
         return
     
     await state.clear()
-    await message.answer(ui.format_welcome(), reply_markup=ReplyKeyboardRemove())
-    await state.set_state(PresaleForm.waiting_for_url)
+    user_name = message.from_user.first_name or "сэр"
+    await message.answer(
+        ui.format_welcome(user_name),
+        reply_markup=menus.get_main_menu(),
+        parse_mode=ParseMode.MARKDOWN
+    )
+
+
+async def menu_handler(message: types.Message, state: FSMContext):
+    """Handle main menu button presses."""
+    user_id = message.from_user.id
+    ui = JarvisUI()
+    menus = JarvisMenus()
+    
+    if not is_user_allowed(user_id):
+        await message.answer(ui.format_access_denied())
+        return
+    
+    text = message.text
+    
+    if text == "🚀 Новый анализ":
+        await state.clear()
+        await message.answer(
+            ui.format_new_analysis_prompt(),
+            reply_markup=menus.get_cancel_keyboard(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+        await state.set_state(PresaleForm.waiting_for_url)
+    
+    elif text == "📊 Мои задачи":
+        tasks = user_tasks_history.get(user_id, [])
+        await message.answer(
+            ui.format_my_tasks(tasks),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+    
+    elif text == "⚙️ Настройки":
+        await message.answer(
+            ui.format_settings(user_id),
+            reply_markup=menus.get_settings_inline(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+    
+    elif text == "📈 Статус":
+        await message.answer(
+            ui.format_status(),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+    
+    elif text == "📖 Справка":
+        await message.answer(
+            ui.format_help(),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+    
+    elif text == "🔙 Главное меню":
+        await state.clear()
+        await message.answer(
+            "🏠 Главное меню",
+            reply_markup=menus.get_main_menu()
+        )
+    
+    elif text == "❌ Отмена":
+        await state.clear()
+        await message.answer(
+            ui.format_cancel(),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
 
 
 async def url_handler(message: types.Message, state: FSMContext):
     """Handle company URL input."""
     user_id = message.from_user.id
     ui = JarvisUI()
+    menus = JarvisMenus()
     
     if not is_user_allowed(user_id):
         return
     
+    # Check for cancel
+    if message.text in ["❌ Отмена", "🔙 Главное меню"]:
+        await state.clear()
+        await message.answer(
+            ui.format_cancel(),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+        return
+    
     url = message.text.strip()
     
-    # Basic URL validation
     if not url.startswith(("http://", "https://")):
         await message.answer(
-            ui.format_error("Неверный формат", "URL должен начинаться с http:// или https://")
+            ui.format_error("Неверный формат", "URL должен начинаться с http:// или https://"),
+            parse_mode=ParseMode.MARKDOWN
         )
         return
     
     await state.update_data(url=url)
-    await message.answer(ui.format_url_received(url))
+    await message.answer(
+        ui.format_url_received(url),
+        parse_mode=ParseMode.MARKDOWN
+    )
     
-    if QUICK_MODE:
+    if get_user_quick_mode(user_id):
         await state.update_data(goal="вводная/квалификация", constraints="неизвестно")
         await state.set_state(PresaleForm.processing)
         await process_presale(message, state)
     else:
-        goal_keyboard = ReplyKeyboardMarkup(
-            keyboard=[
-                [KeyboardButton(text="🎯 Вводная/квалификация")],
-                [KeyboardButton(text="🚀 Согласование пилота")],
-                [KeyboardButton(text="💼 ТКП")]
-            ],
-            resize_keyboard=True,
-            one_time_keyboard=True
+        await message.answer(
+            ui.format_goal_selection(),
+            reply_markup=menus.get_goal_keyboard(),
+            parse_mode=ParseMode.MARKDOWN
         )
-        await message.answer(ui.format_goal_selection(), reply_markup=goal_keyboard)
         await state.set_state(PresaleForm.waiting_for_goal)
 
 
@@ -644,16 +937,28 @@ async def goal_handler(message: types.Message, state: FSMContext):
     """Handle goal selection."""
     user_id = message.from_user.id
     ui = JarvisUI()
+    menus = JarvisMenus()
     
     if not is_user_allowed(user_id):
         return
     
-    # Clean goal text from emojis
+    if message.text == "🔙 Главное меню":
+        await state.clear()
+        await message.answer(
+            "🏠 Главное меню",
+            reply_markup=menus.get_main_menu()
+        )
+        return
+    
     goal = message.text.strip()
     goal = goal.replace("🎯 ", "").replace("🚀 ", "").replace("💼 ", "")
     
     await state.update_data(goal=goal)
-    await message.answer(ui.format_constraints_request(), reply_markup=ReplyKeyboardRemove())
+    await message.answer(
+        ui.format_constraints_request(),
+        reply_markup=ReplyKeyboardRemove(),
+        parse_mode=ParseMode.MARKDOWN
+    )
     await state.set_state(PresaleForm.waiting_for_constraints)
 
 
@@ -674,10 +979,11 @@ async def constraints_handler(message: types.Message, state: FSMContext):
 
 
 async def process_presale(message: types.Message, state: FSMContext):
-    """Process presale request with JARVIS-style updates."""
+    """Process presale request."""
     user_id = message.from_user.id
     bot = message.bot
     ui = JarvisUI()
+    menus = JarvisMenus()
     start_time = datetime.now()
     
     try:
@@ -686,46 +992,73 @@ async def process_presale(message: types.Message, state: FSMContext):
         goal = data.get("goal", "вводная/квалификация")
         constraints = data.get("constraints", "неизвестно")
         
-        # Send processing start message
-        await message.answer(ui.format_processing_start(url, goal, constraints))
+        await message.answer(
+            ui.format_processing_start(url, goal, constraints),
+            parse_mode=ParseMode.MARKDOWN
+        )
         
-        # Build prompt
         prompt = build_prompt_adapter(url, goal, constraints)
-        
-        # Create Manus API client
         client = ManusAPIClient(MANUS_API_KEY, MANUS_BASE_URL)
         
-        # Create task
         task_response = client.create_task(prompt, MANUS_PROJECT_ID)
         task_id = task_response.get("task_id")
-        task_url = task_response.get("task_url", "")
         
         if not task_id:
-            await message.answer(ui.format_error("Ошибка API", "Не удалось создать задачу"))
+            await message.answer(
+                ui.format_error("Ошибка API", "Не удалось создать задачу"),
+                reply_markup=menus.get_main_menu(),
+                parse_mode=ParseMode.MARKDOWN
+            )
             await state.clear()
             return
         
-        # Send task created message (this will be updated with progress)
-        status_message = await message.answer(ui.format_task_created(task_id, task_url))
+        # Save to history
+        if user_id not in user_tasks_history:
+            user_tasks_history[user_id] = []
+        user_tasks_history[user_id].append({
+            "task_id": task_id,
+            "url": url,
+            "goal": goal,
+            "date": datetime.now().strftime("%d.%m.%Y %H:%M"),
+            "status": "running"
+        })
         
-        # Wait for completion with live updates
+        status_message = await message.answer(
+            ui.format_task_created(task_id),
+            parse_mode=ParseMode.MARKDOWN
+        )
+        
         task_data = await wait_for_task_completion(client, task_id, user_id, bot, status_message)
         
         if not task_data:
+            # Update history
+            for task in user_tasks_history.get(user_id, []):
+                if task.get("task_id") == task_id:
+                    task["status"] = "failed"
             await state.clear()
             return
         
-        # Extract files
+        # Update history
+        for task in user_tasks_history.get(user_id, []):
+            if task.get("task_id") == task_id:
+                task["status"] = "completed"
+        
         files = client.extract_files_from_response(task_data)
         
         if not files:
-            await message.answer(ui.format_error("Нет файлов", "В ответе не найдены документы"))
+            await message.answer(
+                ui.format_error("Нет файлов", "В ответе не найдены документы"),
+                reply_markup=menus.get_main_menu(),
+                parse_mode=ParseMode.MARKDOWN
+            )
             await state.clear()
             return
         
-        await message.answer(ui.format_files_ready(len(files)))
+        await message.answer(
+            ui.format_files_ready(len(files)),
+            parse_mode=ParseMode.MARKDOWN
+        )
         
-        # Download and send files
         downloaded_files = {}
         total_files = len(files)
         
@@ -733,10 +1066,7 @@ async def process_presale(message: types.Message, state: FSMContext):
             filename = file_info["name"]
             file_url = file_info["url"]
             
-            # Get description for known files
             description = EXPECTED_ARTIFACTS.get(filename, f"📄 {filename}")
-            
-            # Download file
             filepath = await download_file(file_url, filename)
             
             if filepath and filepath.exists():
@@ -749,63 +1079,113 @@ async def process_presale(message: types.Message, state: FSMContext):
                 except Exception as e:
                     logger.error(f"Error sending file {filename}: {e}")
         
-        # Calculate elapsed time
         elapsed = datetime.now() - start_time
         elapsed_str = f"{int(elapsed.total_seconds() // 60)}:{int(elapsed.total_seconds() % 60):02d}"
         
-        # Send completion message
         await message.answer(
-            ui.format_completion(len(downloaded_files), len(EXPECTED_ARTIFACTS), elapsed_str)
+            ui.format_completion(len(downloaded_files), len(EXPECTED_ARTIFACTS), elapsed_str),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
         )
         
     except Exception as e:
         logger.error(f"Error in process_presale: {e}")
-        await message.answer(ui.format_error("Системная ошибка", str(e)[:50]))
+        await message.answer(
+            ui.format_error("Системная ошибка", str(e)[:50]),
+            reply_markup=menus.get_main_menu(),
+            parse_mode=ParseMode.MARKDOWN
+        )
     
     finally:
         await state.clear()
+
+
+async def settings_callback_handler(callback: CallbackQuery):
+    """Handle settings inline button callbacks."""
+    user_id = callback.from_user.id
+    ui = JarvisUI()
+    menus = JarvisMenus()
+    
+    if not is_user_allowed(user_id):
+        await callback.answer("Доступ запрещен")
+        return
+    
+    data = callback.data
+    
+    if data == "toggle_quick_mode":
+        if user_id not in user_settings:
+            user_settings[user_id] = {}
+        current = user_settings[user_id].get("quick_mode", QUICK_MODE)
+        user_settings[user_id]["quick_mode"] = not current
+        
+        await callback.message.edit_text(
+            ui.format_settings(user_id),
+            reply_markup=menus.get_settings_inline(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+        await callback.answer(f"Quick Mode: {'ВКЛ' if not current else 'ВЫКЛ'}")
+    
+    elif data == "settings_notifications":
+        if user_id not in user_settings:
+            user_settings[user_id] = {}
+        current = user_settings[user_id].get("notifications", True)
+        user_settings[user_id]["notifications"] = not current
+        
+        await callback.message.edit_text(
+            ui.format_settings(user_id),
+            reply_markup=menus.get_settings_inline(),
+            parse_mode=ParseMode.MARKDOWN
+        )
+        await callback.answer(f"Уведомления: {'ВКЛ' if not current else 'ВЫКЛ'}")
+    
+    elif data == "settings_language":
+        await callback.answer("Русский язык установлен по умолчанию")
+    
+    elif data == "back_to_menu":
+        await callback.message.edit_text(
+            "🏠 Используйте меню ниже для навигации",
+            parse_mode=ParseMode.MARKDOWN
+        )
+        await callback.answer()
 
 
 async def help_handler(message: types.Message):
     """Handle /help command."""
     user_id = message.from_user.id
     ui = JarvisUI()
+    menus = JarvisMenus()
     
     if not is_user_allowed(user_id):
         await message.answer(ui.format_access_denied())
         return
     
-    await message.answer(ui.format_help())
-
-
-async def status_handler(message: types.Message):
-    """Handle /status command."""
-    user_id = message.from_user.id
-    ui = JarvisUI()
-    
-    if not is_user_allowed(user_id):
-        await message.answer(ui.format_access_denied())
-        return
-    
-    await message.answer(ui.format_status())
+    await message.answer(
+        ui.format_help(),
+        reply_markup=menus.get_main_menu(),
+        parse_mode=ParseMode.MARKDOWN
+    )
 
 
 async def cancel_handler(message: types.Message, state: FSMContext):
     """Handle /cancel command."""
     user_id = message.from_user.id
     ui = JarvisUI()
+    menus = JarvisMenus()
     
     if not is_user_allowed(user_id):
         return
     
     await state.clear()
-    await message.answer(ui.format_cancel(), reply_markup=ReplyKeyboardRemove())
+    await message.answer(
+        ui.format_cancel(),
+        reply_markup=menus.get_main_menu(),
+        parse_mode=ParseMode.MARKDOWN
+    )
 
 
 async def main():
     """Main bot function."""
     
-    # Validate configuration
     if not TELEGRAM_BOT_TOKEN:
         logger.error("TELEGRAM_BOT_TOKEN not set")
         raise ValueError("TELEGRAM_BOT_TOKEN environment variable is required")
@@ -819,35 +1199,47 @@ async def main():
         raise ValueError("MANUS_PROJECT_ID environment variable is required")
     
     logger.info("=" * 50)
-    logger.info("🤖 JARVIS - BIMAR Presale Intelligence System")
+    logger.info("🤖 JARVIS v2.1 - BIMAR Presale Intelligence System")
     logger.info("=" * 50)
     logger.info(f"Manus API URL: {MANUS_BASE_URL}")
     logger.info(f"Project ID: {MANUS_PROJECT_ID}")
-    logger.info(f"Quick Mode: {QUICK_MODE}")
+    logger.info(f"Quick Mode (default): {QUICK_MODE}")
     
     if ALLOWED_USER_IDS:
         logger.info(f"Allowed users: {ALLOWED_USER_IDS}")
     else:
         logger.info("All users allowed")
     
-    # Initialize bot and dispatcher
     bot = Bot(token=TELEGRAM_BOT_TOKEN)
-    dp = Dispatcher()
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
     
-    # Register handlers
+    # Command handlers
     dp.message.register(start_handler, Command("start"))
     dp.message.register(help_handler, Command("help"))
-    dp.message.register(status_handler, Command("status"))
     dp.message.register(cancel_handler, Command("cancel"))
+    
+    # Menu button handlers (must be before state handlers)
+    dp.message.register(menu_handler, F.text.in_([
+        "🚀 Новый анализ",
+        "📊 Мои задачи",
+        "⚙️ Настройки",
+        "📈 Статус",
+        "📖 Справка",
+        "🔙 Главное меню",
+        "❌ Отмена"
+    ]))
     
     # State handlers
     dp.message.register(url_handler, PresaleForm.waiting_for_url)
     dp.message.register(goal_handler, PresaleForm.waiting_for_goal)
     dp.message.register(constraints_handler, PresaleForm.waiting_for_constraints)
     
+    # Callback handlers
+    dp.callback_query.register(settings_callback_handler)
+    
     logger.info("🚀 JARVIS is starting...")
     
-    # Start polling
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
