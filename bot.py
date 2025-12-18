@@ -84,7 +84,8 @@ class ManusAPIClient:
             response = requests.post(url, json=payload, headers=self.headers, timeout=30)
             response.raise_for_status()
             data = response.json()
-            logger.info(f"Task created: {data.get('id')}")
+            logger.info(f"Task created response: {data}")
+            logger.info(f"Task ID: {data.get('task_id')}")
             return data
         except Exception as e:
             logger.error(f"Error creating task: {e}")
@@ -341,7 +342,7 @@ async def process_presale(message: types.Message, state: FSMContext):
         # Create task
         await message.answer("📤 Создаю задачу в Manus...")
         task_response = client.create_task(prompt, MANUS_PROJECT_ID)
-        task_id = task_response.get("id")
+        task_id = task_response.get("task_id")
         
         if not task_id:
             await message.answer("❌ Ошибка: не удалось создать задачу в Manus")
