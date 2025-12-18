@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  bimar-presale-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bimar-presale-bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - MANUS_API_KEY=${MANUS_API_KEY}
+      - MANUS_BASE_URL=${MANUS_BASE_URL:-https://api.manus.ai}
+      - MANUS_PROJECT_ID=${MANUS_PROJECT_ID}
+      - ALLOWED_USER_IDS=${ALLOWED_USER_IDS}
+      - QUICK_MODE=${QUICK_MODE:-0}
+      - TASK_TIMEOUT=${TASK_TIMEOUT:-1500}
+      - POLLING_INTERVAL=${POLLING_INTERVAL:-10}
+    volumes:
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - bimar-network
+
+networks:
+  bimar-network:
+    driver: bridge
