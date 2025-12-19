@@ -374,9 +374,8 @@ Sales-assistant) — ваш персональный
 1️⃣ Нажмите «🚀 Новый анализ»
 2️⃣ Отправьте URL сайта компании
 3️⃣ Выберите цель встречи
-4️⃣ Укажите ограничения (или «-»)
-5️⃣ Дождитесь генерации (15-30 мин)
-6️⃣ Получите 7 документов
+4️⃣ Дождитесь генерации (15-30 мин)
+5️⃣ Получите 7 документов
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📦 ПРЕСЕЙЛ-ПАКЕТ (7 документов)
@@ -1001,16 +1000,11 @@ async def callback_select_goal(callback: CallbackQuery, state: FSMContext):
     }
     goal = goal_map.get(callback.data, "ТКП")
     await state.update_data(goal=goal)
-    settings = get_user_settings(callback.from_user.id)
-    
-    if settings.get("quick_mode"):
-        await state.update_data(constraints="-")
-        await callback.message.edit_text("✅ Цель: " + goal)
-        await process_presale(callback.message, state, callback.from_user.id)
-    else:
-        await state.set_state(PresaleStates.waiting_constraints)
-        await callback.message.edit_text(msg_goal_accepted(goal))
+    # Сразу запускаем анализ без шага ограничений
+    await state.update_data(constraints="-")
+    await callback.message.edit_text("✅ Цель: " + goal)
     await callback.answer()
+    await process_presale(callback.message, state, callback.from_user.id)
 
 # ═══════════════════════════════════════════════════════════════
 # ОБРАБОТЧИКИ СОСТОЯНИЙ
