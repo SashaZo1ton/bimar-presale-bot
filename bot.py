@@ -1110,7 +1110,19 @@ async def process_presale(message: Message, state: FSMContext, user_id: int):
     task_info["status"] = "completed"
     stats["successful"] += 1
     
-    artifacts = task_status.get("artifacts", [])
+    # Извлекаем файлы из output[].content[] с type=output_file
+    artifacts = []
+    for output_item in task_status.get("output", []):
+        content = output_item.get("content", [])
+        if isinstance(content, list):
+            for item in content:
+                if item.get("type") == "output_file" and item.get("fileUrl"):
+                    artifacts.append({
+                        "url": item.get("fileUrl"),
+                        "name": item.get("fileName", "file")
+                    })
+    
+    logger.info(f"Found {len(artifacts)} files to send")
     files_sent = 0
     
     # Вычисляем время генерации
