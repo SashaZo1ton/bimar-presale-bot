@@ -77,6 +77,18 @@ stats = {
     "files_sent": 0
 }
 
+# Кэш результатов по URL (домен -> данные задачи)
+url_cache: Dict[str, Dict] = {}
+CACHE_TTL_HOURS = int(os.getenv("CACHE_TTL_HOURS", "24"))  # Время жизни кэша в часах
+
+# Очередь задач для параллельной обработки
+task_queue: asyncio.Queue = None  # Инициализируется при запуске
+active_tasks: Dict[str, Dict] = {}  # task_id -> информация о задаче
+MAX_CONCURRENT_TASKS = int(os.getenv("MAX_CONCURRENT_TASKS", "3"))  # Макс параллельных задач
+
+# Хранилище завершённых задач с документами (user_id -> [{task_id, domain, files, date}])
+completed_tasks: Dict[int, List[Dict]] = {}
+
 # ═══════════════════════════════════════════════════════════════
 # FSM СОСТОЯНИЯ
 # ═══════════════════════════════════════════════════════════════
@@ -169,6 +181,30 @@ def get_cancel_keyboard() -> InlineKeyboardMarkup:
         inline_keyboard=[[InlineKeyboardButton(text="❌ Отмена", callback_data="cancel")]]
     )
 
+def get_tasks_keyboard(user_id: int) -> InlineKeyboardMarkup:
+    """Клавиатура для выбора завершённых задач"""
+    tasks = get_completed_tasks(user_id)
+    buttons = []
+    for i, task in enumerate(tasks[:5], 1):
+        domain = task.get("domain", "unknown")[:15]
+        task_id = task.get("task_id", "")
+        buttons.append([InlineKeyboardButton(
+            text=f"#{i} 📁 {domain}",
+            callback_data=f"download_task_{task_id}"
+        )])
+    buttons.append([InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+def get_cache_keyboard(domain: str) -> InlineKeyboardMarkup:
+    """Клавиатура для выбора: использовать кэш или перегенерировать"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⚡ Использовать готовые документы", callback_data=f"use_cache_{domain}")],
+            [InlineKeyboardButton(text="🔄 Сгенерировать заново", callback_data="regenerate")],
+            [InlineKeyboardButton(text="❌ Отмена", callback_data="cancel")]
+        ]
+    )
+
 # ═══════════════════════════════════════════════════════════════
 # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 # ═══════════════════════════════════════════════════════════════
@@ -215,6 +251,52 @@ def get_uptime() -> str:
 def get_progress_bar(percent: int, length: int = 10) -> str:
     filled = int(length * percent / 100)
     return "█" * filled + "░" * (length - filled)
+
+# Функции кэширования
+def get_cached_result(domain: str) -> Optional[Dict]:
+    """Получить закэшированный результат по домену"""
+    if domain in url_cache:
+        cached = url_cache[domain]
+        cache_time = datetime.fromisoformat(cached.get("cached_at", "2000-01-01"))
+        if datetime.now() - cache_time < timedelta(hours=CACHE_TTL_HOURS):
+            logger.info(f"Cache hit for {domain}")
+            return cached
+        else:
+            # Кэш устарел
+            del url_cache[domain]
+            logger.info(f"Cache expired for {domain}")
+    return None
+
+def set_cached_result(domain: str, task_id: str, files: List[Dict]):
+    """Сохранить результат в кэш"""
+    url_cache[domain] = {
+        "task_id": task_id,
+        "files": files,
+        "cached_at": datetime.now().isoformat()
+    }
+    logger.info(f"Cached result for {domain}")
+
+# Функции работы с завершёнными задачами
+def get_completed_tasks(user_id: int) -> List[Dict]:
+    """Получить список завершённых задач пользователя"""
+    if user_id not in completed_tasks:
+        completed_tasks[user_id] = []
+    return completed_tasks[user_id]
+
+def add_completed_task(user_id: int, task_data: Dict):
+    """Добавить завершённую задачу с файлами"""
+    tasks = get_completed_tasks(user_id)
+    tasks.insert(0, task_data)
+    completed_tasks[user_id] = tasks[:20]  # Храним последние 20 задач
+    logger.info(f"Added completed task for user {user_id}: {task_data.get('domain')}")
+
+def get_task_by_id(user_id: int, task_id: str) -> Optional[Dict]:
+    """Найти задачу по ID"""
+    tasks = get_completed_tasks(user_id)
+    for task in tasks:
+        if task.get("task_id") == task_id:
+            return task
+    return None
 
 # Этапы генерации с процентами
 GENERATION_STAGES = [
@@ -484,7 +566,7 @@ def msg_status(user_id: int) -> str:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
 
 def msg_my_tasks(user_id: int) -> str:
-    tasks = get_user_tasks(user_id)
+    tasks = get_completed_tasks(user_id)
     
     if not tasks:
         return f"""╔══════════════════════════════════════╗
@@ -516,41 +598,34 @@ def msg_my_tasks(user_id: int) -> str:
     
     task_lines = []
     for i, task in enumerate(tasks[:5], 1):
-        status_icon = {"completed": "✅", "running": "⏳", "error": "❌"}.get(task.get("status"), "❓")
         domain = task.get("domain", "unknown")[:20]
         goal = task.get("goal", "")[:15]
         date = task.get("date", "")
+        files_count = len(task.get("files", []))
         task_lines.append(f"""┌─────────────────────────────────────┐
-│ #{i} {status_icon} {task.get('status', 'unknown').upper():<28} │
+│ #{i} ✅ ЗАВЕРШЕНО                     │
 ├─────────────────────────────────────┤
 │ 🏢 {domain:<32} │
 │ 🎯 {goal:<32} │
 │ 📅 {date:<32} │
+│ 📁 Документов: {files_count:<20} │
 └─────────────────────────────────────┘""")
     
     tasks_text = "\n\n".join(task_lines)
-    completed = sum(1 for t in tasks if t.get("status") == "completed")
-    running = sum(1 for t in tasks if t.get("status") == "running")
-    errors = sum(1 for t in tasks if t.get("status") == "error")
     
     return f"""╔══════════════════════════════════════╗
 ║  📊 МОИ ЗАДАЧИ                      ║
 ╚══════════════════════════════════════╝
 
-🗂️ История анализов (последние 5):
+🗂️ Завершённые анализы (последние 5):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 {tasks_text}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📈 СТАТИСТИКА
-┌─────────────────────────────────────┐
-│ 📊 Всего анализов: {len(tasks):<16} │
-│ ✅ Успешных: {completed:<22} │
-│ ⏳ В процессе: {running:<20} │
-│ ❌ С ошибкой: {errors:<21} │
-└─────────────────────────────────────┘
+💡 Для повторной загрузки документов
+   нажмите кнопку с номером задачи.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🤖 JARVIS v{VERSION} | BIMAR SYSTEM
@@ -851,7 +926,12 @@ async def btn_new_analysis(message: Message, state: FSMContext):
 async def btn_my_tasks(message: Message):
     if not is_user_allowed(message.from_user.id):
         return
-    await message.answer(msg_my_tasks(message.from_user.id), reply_markup=get_main_keyboard())
+    user_id = message.from_user.id
+    tasks = get_completed_tasks(user_id)
+    if tasks:
+        await message.answer(msg_my_tasks(user_id), reply_markup=get_tasks_keyboard(user_id))
+    else:
+        await message.answer(msg_my_tasks(user_id), reply_markup=get_main_keyboard())
 
 @router.message(F.text == "⚙️ Настройки")
 async def btn_settings(message: Message):
