@@ -758,7 +758,7 @@ async def create_manus_task(url: str, goal: str, constraints: str) -> Optional[s
 7. 07_Верификация.md - список источников информации для проверки данных"""
 
     headers = {
-        "Authorization": f"Bearer {MANUS_API_KEY}",
+        "API_KEY": MANUS_API_KEY,
         "Content-Type": "application/json"
     }
     payload = {"prompt": prompt, "projectId": MANUS_PROJECT_ID}
@@ -779,7 +779,7 @@ async def create_manus_task(url: str, goal: str, constraints: str) -> Optional[s
         return None
 
 async def get_task_status(task_id: str) -> Dict[str, Any]:
-    headers = {"Authorization": f"Bearer {MANUS_API_KEY}"}
+    headers = {"API_KEY": MANUS_API_KEY}
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
