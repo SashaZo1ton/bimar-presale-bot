@@ -983,7 +983,7 @@ async def btn_new_analysis(message: Message, state: FSMContext):
     if not is_user_allowed(message.from_user.id):
         return
     stats["requests_today"] += 1
-    await state.set_state(PresaleStates.waiting_url)
+    await state.set_state(PresaleStates.waiting_for_url)
     await message.answer(msg_new_analysis(), reply_markup=get_cancel_keyboard())
 
 @router.message(F.text == "📊 Мои задачи")
@@ -1155,7 +1155,7 @@ async def callback_select_goal(callback: CallbackQuery, state: FSMContext):
 # ОБРАБОТЧИКИ СОСТОЯНИЙ
 # ═══════════════════════════════════════════════════════════════
 
-@router.message(StateFilter(PresaleStates.waiting_url))
+@router.message(StateFilter(PresaleStates.waiting_for_url))
 async def handle_url(message: Message, state: FSMContext):
     url = message.text.strip()
     if not url.startswith(('http://', 'https://')):
@@ -1174,10 +1174,10 @@ async def handle_url(message: Message, state: FSMContext):
         await message.answer(f"✅ URL: {domain}\n✅ Цель: {settings['default_goal']}")
         await process_presale(message, state, message.from_user.id)
     else:
-        await state.set_state(PresaleStates.waiting_goal)
+        await state.set_state(PresaleStates.waiting_for_goal)
         await message.answer(msg_url_accepted(domain), reply_markup=get_goals_keyboard())
 
-@router.message(StateFilter(PresaleStates.waiting_constraints))
+@router.message(StateFilter(PresaleStates.waiting_for_constraints))
 async def handle_constraints(message: Message, state: FSMContext):
     constraints = message.text.strip()
     await state.update_data(constraints=constraints)
