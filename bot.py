@@ -33,11 +33,79 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 
-# Импорт модулей для двухэтапного процесса
-from main_states import PresaleStates
-from document_types import DOCUMENT_TYPES, SELECTABLE_DOCS
-from document_selector import get_document_selector_keyboard, get_selected_docs_summary
-from generation_handlers import process_analysis, show_document_selector, process_selected_documents
+# Определение состояний FSM для двухэтапного процесса
+class PresaleStates(StatesGroup):
+    """FSM состояния для пресейл-бота"""
+    waiting_for_url = State()       # Ожидание URL сайта
+    waiting_for_goal = State()      # Ожидание выбора цели
+    analyzing = State()             # Этап 1: Анализ и создание досье
+    selecting_docs = State()        # Этап 2: Выбор документов
+    generating_docs = State()       # Этап 3: Генерация выбранных документов
+    waiting_for_constraints = State()  # Ожидание ограничений
+
+# Типы документов для выбора
+DOCUMENT_TYPES = {
+    "dossier": {
+        "id": "dossier",
+        "name": "01_Досье_на_клиента",
+        "filename": "01_Досье_на_клиента.docx",
+        "format": "docx",
+        "icon": "📋",
+        "description": "Профиль компании, боли, ЛПР",
+        "mandatory": True
+    },
+    "use_cases": {
+        "id": "use_cases",
+        "name": "02_Решения_BIMAR",
+        "filename": "02_Решения_BIMAR.xlsx",
+        "format": "xlsx",
+        "icon": "🗺️",
+        "description": "Карта модулей BimAR и сценариев"
+    },
+    "roi": {
+        "id": "roi",
+        "name": "03_Экономика_сделки",
+        "filename": "03_Экономика_сделки.xlsx",
+        "format": "xlsx",
+        "icon": "💰",
+        "description": "ROI калькулятор + стоимость пилота"
+    },
+    "sow": {
+        "id": "sow",
+        "name": "04_Пилот_ТЗ",
+        "filename": "04_Пилот_ТЗ.docx",
+        "format": "docx",
+        "icon": "📝",
+        "description": "Техзадание на пилот 90 дней"
+    },
+    "stakeholders": {
+        "id": "stakeholders",
+        "name": "05_ЛПР_и_квалификация",
+        "filename": "05_ЛПР_и_квалификация.xlsx",
+        "format": "xlsx",
+        "icon": "🎯",
+        "description": "Карта ЛПР + MEDDPICC"
+    },
+    "presentation": {
+        "id": "presentation",
+        "name": "06_Питч_для_клиента",
+        "filename": "06_Питч_для_клиента.pptx",
+        "format": "pptx",
+        "icon": "📊",
+        "description": "Презентация 10-12 слайдов"
+    },
+    "verification": {
+        "id": "verification",
+        "name": "07_Верификация",
+        "filename": "07_Верификация.docx",
+        "format": "docx",
+        "icon": "✅",
+        "description": "Чек-лист готовности пресейла"
+    }
+}
+
+# Список документов для выбора (исключая обязательные)
+SELECTABLE_DOCS = [k for k, v in DOCUMENT_TYPES.items() if not v.get("mandatory", False)]
 
 # ═══════════════════════════════════════════════════════════════
 # КОНФИГУРАЦИЯ
