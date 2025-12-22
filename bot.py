@@ -35,13 +35,14 @@ from aiogram.enums import ParseMode
 
 # Определение состояний FSM для двухэтапного процесса
 class PresaleStates(StatesGroup):
-    """FSM состояния для пресейл-бота"""
+    """ФСМ состояния для пресейл-бота"""
     waiting_for_url = State()       # Ожидание URL сайта
     waiting_for_goal = State()      # Ожидание выбора цели
     analyzing = State()             # Этап 1: Анализ и создание досье
     selecting_docs = State()        # Этап 2: Выбор документов
     generating_docs = State()       # Этап 3: Генерация выбранных документов
     waiting_for_constraints = State()  # Ожидание ограничений
+    processing = State()            # Обработка задачи Manus
 
 # Типы документов для выбора
 DOCUMENT_TYPES = {
@@ -1147,9 +1148,8 @@ async def callback_select_goal(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text("✅ Цель: " + goal)
     await callback.answer()
     
-    # Запускаем ЭТАП 1: Анализ и генерация досье
-    await state.set_state(PresaleStates.analyzing)
-    await process_analysis(callback.message, state, callback.from_user.id, MANUS_API_KEY)
+    # Запускаем процесс генерации пресейл-пакета
+    await process_presale(callback.message, state, callback.from_user.id)
 
 # ═══════════════════════════════════════════════════════════════
 # ОБРАБОТЧИКИ СОСТОЯНИЙ
