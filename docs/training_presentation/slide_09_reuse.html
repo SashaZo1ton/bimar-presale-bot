@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Повторное использование</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 40px 24px; /* keep top padding 60px, reduce sides and bottom */
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #555;
+            margin-bottom: 30px; /* reduced from 60 */
+            border-left: 4px solid #FF4500;
+            padding-left: 20px;
+        }
+        .content {
+            display: flex;
+            gap: 40px; /* reduced horizontal gap */
+            flex: 1;
+        }
+        .left-col {
+            flex: 1;
+        }
+        .right-col {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 20px; /* reduced internal padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            border-top: 8px solid #0052CC;
+        }
+        .step-list {
+            list-style: none;
+            counter-reset: reuse-step;
+        }
+        .step-item {
+            margin-bottom: 24px; /* reduced from 40 */
+            position: relative;
+            padding-left: 60px;
+        }
+        .step-item::before {
+            counter-increment: reuse-step;
+            content: counter(reuse-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 36px;
+            font-weight: 700;
+            color: #0052CC;
+            line-height: 1;
+        }
+        .step-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.4;
+        }
+        /* Reflow stats into a compact 2-column grid to save vertical space */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .stat-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0; /* reduced padding */
+            border-bottom: 1px solid #eee;
+        }
+        .stat-card.full {
+            grid-column: 1 / -1;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .stat-label {
+            font-size: 18px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1A1A1A;
+        }
+        .highlight {
+            color: #FF4500;
+        }
+        .use-case-box {
+            margin-top: 16px; /* reduced from 40 */
+            padding-top: 12px; /* reduced from 20 */
+            border-top: 2px solid #0052CC;
+        }
+        .use-case-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0052CC;
+            font-size: 20px;
+        }
+        .use-case-list {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Повторное использование</h1>
+        <h2>Как получить документы мгновенно, если компания уже проанализирована?</h2>
+        
+        <div class="content">
+            <div class="left-col">
+                <ul class="step-list">
+                    <li class="step-item">
+                        <div class="step-title">Нажмите «Мои задачи»</div>
+                        <div class="step-desc">В главном меню бота выберите кнопку <strong>📊 Мои задачи</strong>.</div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-title">Выберите компанию</div>
+                        <div class="step-desc">Бот покажет список последних 5 анализов (например, #1 gazprom-neft.ru).</div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-title">Получите файлы</div>
+                        <div class="step-desc">Бот мгновенно отправит все 7 документов без ожидания генерации.</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="right-col">
+                <div class="stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Время ожидания</span>
+                        <span class="stat-value highlight">Мгновенно</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">История задач</span>
+                        <span class="stat-value">Последние 20</span>
+                    </div>
+                    <div class="stat-card full">
+                        <span class="stat-label">Срок хранения</span>
+                        <span class="stat-value">24 часа</span>
+                    </div>
+                </div>
+                
+                <div class="use-case-box">
+                    <div class="use-case-title">Идеально для ситуаций:</div>
+                    <div class="use-case-list">
+                        • Встреча перенеслась<br>
+                        • Нужны файлы коллеге<br>
+                        • Подготовка ко второй встрече
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

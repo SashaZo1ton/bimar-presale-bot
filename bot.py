@@ -33,6 +33,12 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 
+# Импорт модулей для двухэтапного процесса
+from main_states import PresaleStates
+from document_types import DOCUMENT_TYPES, SELECTABLE_DOCS
+from document_selector import get_document_selector_keyboard, get_selected_docs_summary
+from generation_handlers import process_analysis, show_document_selector, process_selected_documents
+
 # ═══════════════════════════════════════════════════════════════
 # КОНФИГУРАЦИЯ
 # ═══════════════════════════════════════════════════════════════
@@ -88,16 +94,6 @@ MAX_CONCURRENT_TASKS = int(os.getenv("MAX_CONCURRENT_TASKS", "3"))  # Макс �
 
 # Хранилище завершённых задач с документами (user_id -> [{task_id, domain, files, date}])
 completed_tasks: Dict[int, List[Dict]] = {}
-
-# ═══════════════════════════════════════════════════════════════
-# FSM СОСТОЯНИЯ
-# ═══════════════════════════════════════════════════════════════
-
-class PresaleStates(StatesGroup):
-    waiting_url = State()
-    waiting_goal = State()
-    waiting_constraints = State()
-    processing = State()
 
 # ═══════════════════════════════════════════════════════════════
 # ИНИЦИАЛИЗАЦИЯ БОТА
@@ -1080,11 +1076,12 @@ async def callback_select_goal(callback: CallbackQuery, state: FSMContext):
     }
     goal = goal_map.get(callback.data, "ТКП")
     await state.update_data(goal=goal)
-    # Сразу запускаем анализ без шага ограничений
-    await state.update_data(constraints="-")
     await callback.message.edit_text("✅ Цель: " + goal)
     await callback.answer()
-    await process_presale(callback.message, state, callback.from_user.id)
+    
+    # Запускаем ЭТАП 1: Анализ и генерация досье
+    await state.set_state(PresaleStates.analyzing)
+    await process_analysis(callback.message, state, callback.from_user.id, MANUS_API_KEY)
 
 # ═══════════════════════════════════════════════════════════════
 # ОБРАБОТЧИКИ СОСТОЯНИЙ
@@ -1239,6 +1236,68 @@ async def process_presale(message: Message, state: FSMContext, user_id: int):
     # Финальное сообщение
     await message.answer(msg_delivery_complete(domain, files_sent, elapsed_str), reply_markup=get_main_keyboard())
     await state.clear()
+
+# ═══════════════════════════════════════════════════════════════
+# ОБРАБОТЧИКИ ВЫБОРА ДОКУМЕНТОВ
+# ═══════════════════════════════════════════════════════════════
+
+@router.callback_query(F.data.startswith("toggle_doc_"))
+async def callback_toggle_doc(callback: CallbackQuery, state: FSMContext):
+    """Переключение выбора одного документа"""
+    doc_id = callback.data.replace("toggle_doc_", "")
+    data = await state.get_data()
+    selected = set(data.get("selected_docs", []))
+    
+    if doc_id in selected:
+        selected.remove(doc_id)
+    else:
+        selected.add(doc_id)
+    
+    await state.update_data(selected_docs=list(selected))
+    await callback.message.edit_reply_markup(reply_markup=get_document_selector_keyboard(selected))
+    await callback.answer()
+
+@router.callback_query(F.data == "toggle_all_docs")
+async def callback_toggle_all(callback: CallbackQuery, state: FSMContext):
+    """Выбрать/снять все документы"""
+    data = await state.get_data()
+    selected = set(data.get("selected_docs", []))
+    
+    if len(selected) == len(SELECTABLE_DOCS):
+        selected = set()  # Снять все
+    else:
+        selected = set(SELECTABLE_DOCS)  # Выбрать все
+    
+    await state.update_data(selected_docs=list(selected))
+    await callback.message.edit_reply_markup(reply_markup=get_document_selector_keyboard(selected))
+    await callback.answer()
+
+@router.callback_query(F.data == "confirm_docs")
+async def callback_confirm_docs(callback: CallbackQuery, state: FSMContext):
+    """Подтверждение выбора и запуск генерации"""
+    data = await state.get_data()
+    selected = data.get("selected_docs", [])
+    
+    if not selected:
+        await callback.answer("⚠️ Выберите хотя бы 1 документ", show_alert=True)
+        return
+    
+    summary = get_selected_docs_summary(set(selected))
+    await callback.message.edit_text(f"""✅ Выбрано {len(selected)} документов:
+
+{summary}
+
+⏳ Запускаю генерацию...""")
+    await callback.answer()
+    
+    # Запускаем ЭТАП 3: Генерация выбранных документов
+    await state.set_state(PresaleStates.generating_docs)
+    await process_selected_documents(callback.message, state, callback.from_user.id)
+
+@router.callback_query(F.data == "noop")
+async def callback_noop(callback: CallbackQuery):
+    """Пустой callback для неактивных кнопок"""
+    await callback.answer()
 
 # ═══════════════════════════════════════════════════════════════
 # ЗАПУСК БОТА

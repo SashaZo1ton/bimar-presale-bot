@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>JARVIS v3.0 — ИИ-ассистент для пресейла</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+        .slide-container{width:1280px;min-height:720px;background:#F2F2F2;display:flex;overflow:hidden}
+        .left-panel{width:55%;background:#0052CC;color:#fff;display:flex;flex-direction:column;justify-content:flex-start;padding-top:80px;padding-right:40px;padding-bottom:40px;padding-left:60px}
+        .right-panel{width:45%;background:#F2F2F2;display:flex;align-items:center;justify-content:center;padding:24px}
+        h1{font-size:84px;font-weight:700;line-height:1.1;margin-bottom:24px;letter-spacing:-2px}
+        h2{font-size:32px;font-weight:400;margin-bottom:24px;opacity:0.9;line-height:1.4}
+        .features{font-size:20px;line-height:1.6;opacity:0.85;border-left:4px solid #FF4500;padding-left:24px}
+        .features p{margin:0 0 8px 0}
+        /* Use aspect-ratio via padding trick so the image box height is constrained and predictable */
+        .image-wrapper{width:100%;position:relative;overflow:hidden;background:#fff;box-shadow:-20px 20px 60px rgba(0,0,0,0.15);border-radius:16px;padding-top:60%}
+        .image-wrapper img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:top}
+        .brand{font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:0.6;margin-top:20px}
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="left-panel">
+            <h1>JARVIS v3.0</h1>
+            <h2>ИИ-ассистент для пресейла</h2>
+            <div class="features">
+                <p>Автоматическая генерация пакетов документов</p>
+                <p>Готовность за 15-30 минут</p>
+                <p>Интеграция с Manus API</p>
+            </div>
+            <div class="brand">BIMAR SYSTEM</div>
+        </div>
+        <div class="right-panel">
+            <div class="image-wrapper">
+                <img src="/home/ubuntu/upload/Screenshot_20251219-071734.jpg" alt="JARVIS Interface">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

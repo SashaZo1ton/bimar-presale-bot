@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Практические сценарии</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 40px 20px 40px; /* keep top padding 60 */
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 20px; /* reduced to save vertical space */
+            letter-spacing: -1px;
+        }
+        .grid {
+            display: flex;
+            gap: 20px;
+            /* removed height:100% to avoid forced stretching */
+        }
+        .scenario-card {
+            flex: 1;
+            background: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 6px solid #0052CC;
+        }
+        .image-wrapper {
+            height: 180px; /* reduced from 220 */
+            width: 100%;
+            overflow: hidden;
+        }
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 16px; /* reduced from 30 */
+            display: flex;
+            flex-direction: column;
+            /* removed flex:1 to prevent cards stretching to full height */
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0052CC;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        .context {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px; /* reduced from 30 */
+        }
+        .action-box {
+            background: #F2F2F2;
+            padding: 10px; /* reduced from 16 */
+            border-left: 4px solid #FF4500;
+        }
+        .action-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .action-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Практические сценарии использования</h1>
+        
+        <div class="grid">
+            <!-- Scenario 1 -->
+            <div class="scenario-card">
+                <div class="image-wrapper">
+                    <img src="/home/ubuntu/upload/search_images/kplYxYL28hKv.jpeg" alt="Meeting Prep">
+                </div>
+                <div class="card-content">
+                    <h2>Экспресс-подготовка</h2>
+                    <div class="context">
+                        Встреча через 30 минут, а информации о клиенте мало. Нужно быстро понять боли и предложить решение.
+                    </div>
+                    <div class="action-box">
+                        <div class="action-label">Действие в JARVIS</div>
+                        <div class="action-text">🚀 Новый анализ → Вводная</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2 -->
+            <div class="scenario-card">
+                <div class="image-wrapper">
+                    <img src="/home/ubuntu/upload/search_images/aTs5m79H24bq.jpg" alt="Team Brainstorm">
+                </div>
+                <div class="card-content">
+                    <h2>Стратегия продажи</h2>
+                    <div class="context">
+                        Команда обсуждает, как зайти к крупному клиенту. Нужны аргументы и точки входа.
+                    </div>
+                    <div class="action-box">
+                        <div class="action-label">Действие в JARVIS</div>
+                        <div class="action-text">📊 Изучить «Карту стейкхолдеров»</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3 -->
+            <div class="scenario-card">
+                <div class="image-wrapper">
+                    <img src="/home/ubuntu/upload/search_images/fBOC5g2FGvdn.webp" alt="Proposal">
+                </div>
+                <div class="card-content">
+                    <h2>Обоснование бюджета</h2>
+                    <div class="context">
+                        Клиент готов купить, но финансовый директор требует цифры окупаемости.
+                    </div>
+                    <div class="action-box">
+                        <div class="action-label">Действие в JARVIS</div>
+                        <div class="action-text">💰 Скачать «ROI Калькулятор»</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

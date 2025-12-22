@@ -1,0 +1,148 @@
+{
+  "project_info": {
+    "title": "JARVIS v3.0 — ИИ-ассистент для пресейла",
+    "created": 1766131544.3164716,
+    "last_updated": 1766132003.4616203,
+    "total_slides": 17
+  },
+  "slides": {
+    "slide_01_title": "edited",
+    "slide_02_problem_solution": "edited",
+    "slide_03_documents": "edited",
+    "slide_04_start_step1": "edited",
+    "slide_05_start_step2": "edited",
+    "slide_06_start_step3": "edited",
+    "slide_07_start_step4": "edited",
+    "slide_08_start_step5": "edited",
+    "slide_09_reuse": "edited",
+    "slide_10_settings": "edited",
+    "slide_11_status": "edited",
+    "slide_12_scenarios": "edited",
+    "slide_13_faq": "edited",
+    "slide_14_tips": "edited",
+    "slide_15_support": "edited",
+    "slide_16_summary": "edited",
+    "slide_17_contacts": "edited"
+  },
+  "outline": [
+    {
+      "id": "slide_01_title",
+      "title": "JARVIS v3.0 — ИИ-ассистент для пресейла",
+      "summary": "Титульный слайд с названием бота и его основным назначением.",
+      "image_plan": "/home/ubuntu/upload/Screenshot_20251219-071734.jpg; /home/ubuntu/upload/Снимокэкрана2025-12-19в11.36.08.png - Images 1 and 2 are actual screenshots of the JARVIS Telegram bot interface, which is highly relevant for the title slide introducing the product. Image 2 also shows the error message, which is a bit less ideal, but both show the interface. Image 3 is a generic AI robot.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_02_problem_solution",
+      "title": "Почему JARVIS экономит время вашей команде?",
+      "summary": "Сравнение процесса подготовки пресейла вручную и с помощью JARVIS.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_03_documents",
+      "title": "7 документов для каждого анализа",
+      "summary": "Обзор 7 документов, которые генерирует бот, и их назначение.",
+      "image_plan": "/home/ubuntu/upload/search_images/eR1ikJKjgORj.jpg; /home/ubuntu/upload/search_images/6AecuSAmrNig.jpg - Images 9 and 10 show examples of business documents and document templates, which directly relates to the slide content listing the 7 documents JARVIS generates.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_04_start_step1",
+      "title": "Быстрый старт — Шаг 1: Запуск бота",
+      "summary": "Инструкция по поиску и запуску бота в Telegram.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_05_start_step2",
+      "title": "Быстрый старт — Шаг 2: Ввод URL",
+      "summary": "Как правильно ввести URL сайта компании для анализа.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_06_start_step3",
+      "title": "Быстрый старт — Шаг 3: Выбор цели",
+      "summary": "Описание трех вариантов целей встречи и их влияние на результат.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_07_start_step4",
+      "title": "Быстрый старт — Шаг 4: Ожидание генерации",
+      "summary": "Описание процесса генерации и этапов прогресс-бара.",
+      "image_plan": "/home/ubuntu/upload/search_images/xUzeJ7esTzn6.jpg; /home/ubuntu/upload/search_images/LlSVLefbDKjs.jpg; /home/ubuntu/upload/search_images/DWFSr2c8omsb.jpg - The slide discusses waiting for generation with a progress bar. Images 11, 12, and 13 are all variations of loading/progress bars, visually representing the waiting process.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_08_start_step5",
+      "title": "Быстрый старт — Шаг 5: Получение документов",
+      "summary": "Как бот отправляет готовые файлы и что с ними делать.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_09_reuse",
+      "title": "Повторное использование: Мои задачи",
+      "summary": "Как мгновенно получить документы для ранее проанализированной компании.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_10_settings",
+      "title": "Настройки: Персонализация JARVIS",
+      "summary": "Обзор настроек бота: Quick Mode, уведомления, язык.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_11_status",
+      "title": "Проверка статуса системы",
+      "summary": "Как проверить работоспособность бота и API через меню Статус.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_12_scenarios",
+      "title": "Практические сценарии использования",
+      "summary": "Примеры использования бота для разных типов встреч и задач.",
+      "image_plan": "/home/ubuntu/upload/search_images/kplYxYL28hKv.jpeg; /home/ubuntu/upload/search_images/aTs5m79H24bq.jpg; /home/ubuntu/upload/search_images/fBOC5g2FGvdn.webp - The slide discusses practical scenarios for using JARVIS in team meetings and client interactions. Images 14, 15, and 16 show various professional team meeting and presentation settings.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_13_faq",
+      "title": "Частые вопросы (FAQ)",
+      "summary": "Ответы на популярные вопросы новых пользователей.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_14_tips",
+      "title": "Советы и лучшие практики",
+      "summary": "Рекомендации по эффективному использованию бота.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_15_support",
+      "title": "Техническая поддержка",
+      "summary": "Контакты поддержки и полезные ресурсы для пользователей.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_16_summary",
+      "title": "Итоги: Начните использовать JARVIS сегодня",
+      "summary": "Резюме преимуществ и призыв к действию.",
+      "image_plan": "/home/ubuntu/upload/search_images/OMUYLvIAUVLe.jpg; /home/ubuntu/upload/search_images/pOuH7RH3Yron.jpg - The slide is a call to action and summary of benefits, focusing on success and efficiency. Images 17 and 18 show people celebrating success and professional achievement, which aligns with the positive outcome described.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_17_contacts",
+      "title": "Контакты и ресурсы",
+      "summary": "Финальный слайд с полезными ссылками и контактами.",
+      "image_plan": "",
+      "slide_template_key": ""
+    }
+  ]
+}

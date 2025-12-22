@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "title": "JARVIS v3.0: The Future of Presale",
+    "created": 1766132240.5600724,
+    "last_updated": 1766133340.6328819,
+    "total_slides": 10
+  },
+  "slides": {
+    "slide_01_hero": "edited",
+    "slide_02_problem": "edited",
+    "slide_03_solution": "edited",
+    "slide_04_capabilities": "edited",
+    "slide_05_workflow": "edited",
+    "slide_06_results": "edited",
+    "slide_07_documents": "edited",
+    "slide_08_demo": "edited",
+    "slide_09_team": "edited",
+    "slide_10_closing": "edited"
+  },
+  "outline": [
+    {
+      "id": "slide_01_hero",
+      "title": "JARVIS v3.0: The Future of Presale",
+      "summary": "Героический слайд с визуализацией робота JARVIS и основной идеей: революция в пресейле через ИИ.",
+      "image_plan": "/home/ubuntu/upload/Screenshot_20251219-071734.jpg; /home/ubuntu/upload/Снимокэкрана2025-12-19в11.36.08.png - Images 1 and 2 are actual screenshots of the JARVIS Telegram bot interface, which is highly relevant for the title slide introducing the product. Image 2 also shows the error message, which is a bit less ideal, but both show the interface. Image 3 is a generic AI robot.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_02_problem",
+      "title": "The Problem: Time Wasted on Routine",
+      "summary": "Описание текущих болей: менеджеры тратят 3 часа на подготовку документов, теряют время на анализ клиентов, не успевают на встречи.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_03_solution",
+      "title": "The Solution: JARVIS v3.0",
+      "summary": "Представление решения: ИИ-ассистент, который анализирует компанию за 15-30 минут и генерирует 7 готовых документов.",
+      "image_plan": "/home/ubuntu/upload/search_images/eR1ikJKjgORj.jpg; /home/ubuntu/upload/search_images/6AecuSAmrNig.jpg - Images 9 and 10 show examples of business documents and document templates, which directly relates to the slide content listing the 7 documents JARVIS generates.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_04_capabilities",
+      "title": "What JARVIS Can Do",
+      "summary": "Ключевые возможности: анализ сайта, выявление ЛПР, расчёт ROI, создание презентации, ТЗ на пилот и карта стейкхолдеров.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_05_workflow",
+      "title": "The Workflow: 3 Simple Steps",
+      "summary": "Процесс использования: 1) Введите URL, 2) Выберите цель, 3) Получите документы. Визуальное отображение алгоритма.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_06_results",
+      "title": "The Results: Real Impact",
+      "summary": "Метрики: 15-30 минут вместо 3 часов, 7 документов, 100% готовности к встречам, рост конверсии на 40%.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_07_documents",
+      "title": "7 Documents in One Package",
+      "summary": "Визуальный обзор всех 7 документов пресейл-пакета с кратким описанием каждого.",
+      "image_plan": "/home/ubuntu/upload/search_images/xUzeJ7esTzn6.jpg; /home/ubuntu/upload/search_images/LlSVLefbDKjs.jpg; /home/ubuntu/upload/search_images/DWFSr2c8omsb.jpg - The slide discusses waiting for generation with a progress bar. Images 11, 12, and 13 are all variations of loading/progress bars, visually representing the waiting process.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_08_demo",
+      "title": "See JARVIS in Action",
+      "summary": "Демонстрация интерфейса бота в Telegram: главное меню, процесс анализа, получение документов.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_09_team",
+      "title": "Built for Your Team",
+      "summary": "JARVIS интегрируется в рабочий процесс: доступен в Telegram, сохраняет историю, позволяет делиться результатами.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_10_closing",
+      "title": "Start Using JARVIS Today",
+      "summary": "Финальный призыв к действию: активируйте бота, начните экономить время, закрывайте сделки быстрее.",
+      "image_plan": "",
+      "slide_template_key": ""
+    }
+  ]
+}

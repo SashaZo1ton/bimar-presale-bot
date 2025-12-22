@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Советы и лучшие практики</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px; /* keep as required */
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 60px 20px; /* keep top padding (60px) but reduce bottom */
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 30px; /* reduced to save height */
+            letter-spacing: -1px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px; /* reduced gap */
+            flex: 1;
+            margin-bottom: 20px; /* reduced to bring footer closer */
+        }
+        .tip-card {
+            background: #FFFFFF;
+            padding: 18px; /* reduced inner padding */
+            border-top: 6px solid #0052CC;
+            display: flex;
+            flex-direction: column;
+        }
+        .tip-card:nth-child(2) { border-top-color: #FF4500; }
+        .tip-card:nth-child(3) { border-top-color: #1A1A1A; }
+        .tip-card:nth-child(4) { border-top-color: #0052CC; }
+
+        .tip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px; /* slightly reduced */
+        }
+        .tip-number {
+            font-size: 40px;
+            font-weight: 700;
+            color: #E0E0E0;
+            line-height: 1;
+        }
+        .tip-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            flex: 1;
+            margin-right: 12px;
+        }
+        .tip-text {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .footer-strip {
+            background: #0052CC;
+            color: #FFFFFF;
+            padding: 16px 24px; /* slightly reduced */
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer-icon {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Советы и лучшие практики</h1>
+        
+        <div class="grid">
+            <!-- Tip 1 -->
+            <div class="tip-card">
+                <div class="tip-header">
+                    <div class="tip-title">Проверяйте доступность сайта</div>
+                    <div class="tip-number">01</div>
+                </div>
+                <div class="tip-text">
+                    JARVIS анализирует открытые данные. Если сайт клиента не работает или находится на реконструкции, качество анализа снизится. Убедитесь, что ссылка открывается.
+                </div>
+            </div>
+
+            <!-- Tip 2 -->
+            <div class="tip-card">
+                <div class="tip-header">
+                    <div class="tip-title">Выбирайте цель осознанно</div>
+                    <div class="tip-number">02</div>
+                </div>
+                <div class="tip-text">
+                    Не используйте "Вводную" цель для финального КП. Алгоритмы подстраивают структуру документов под этап сделки — от общего знакомства до конкретных цифр.
+                </div>
+            </div>
+
+            <!-- Tip 3 -->
+            <div class="tip-card">
+                <div class="tip-header">
+                    <div class="tip-title">Доверяй, но проверяй</div>
+                    <div class="tip-number">03</div>
+                </div>
+                <div class="tip-text">
+                    ИИ — мощный помощник, но финальное решение за вами. Всегда просматривайте презентацию и КП перед отправкой клиенту. Добавьте "человеческий фактор".
+                </div>
+            </div>
+
+            <!-- Tip 4 -->
+            <div class="tip-card">
+                <div class="tip-header">
+                    <div class="tip-title">Делитесь с коллегами</div>
+                    <div class="tip-number">04</div>
+                </div>
+                <div class="tip-text">
+                    Используйте раздел "Мои задачи", чтобы быстро переслать готовый пакет документов руководителю или команде пресейла без повторной генерации.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-strip">
+            <span class="footer-icon">💡</span>
+            <strong>Pro Tip:</strong> Для сложных холдингов лучше анализировать сайт конкретной дочерней компании, а не общую корпоративную страницу.
+        </div>
+    </div>
+</body>
+</html>

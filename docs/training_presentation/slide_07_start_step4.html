@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Шаг 4: Ожидание генерации</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px; /* keep as required */
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            /* keep top padding to preserve title position, reduce bottom to avoid extra total height */
+            padding: 60px 40px 12px 40px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+        .content {
+            display: flex;
+            gap: 30px;
+            height: 100%;
+        }
+        .left-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            /* prevent vertical stretching that caused overflow */
+            justify-content: flex-start;
+        }
+        .right-col {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 4px solid #0052CC;
+        }
+        .info-block {
+            margin-bottom: 18px;
+        }
+        .info-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052CC;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-text {
+            font-size: 24px;
+            color: #333333;
+            line-height: 1.4;
+        }
+        .time-box {
+            background: #1A1A1A;
+            color: #FFFFFF;
+            padding: 12px;
+            font-size: 24px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 12px;
+        }
+        .stages-list {
+            list-style: none;
+            margin-bottom: 20px;
+            padding: 0;
+        }
+        .stage-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 20px;
+            color: #333333;
+        }
+        .stage-percent {
+            font-weight: 700;
+            color: #FF4500;
+            width: 80px;
+            font-size: 24px;
+        }
+        .stage-name {
+            font-weight: 600;
+        }
+        .image-container {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+            /* remove margin-top:auto to avoid pushing image to bottom */
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        .cancel-note {
+            font-size: 16px;
+            color: #666;
+            margin-top: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Быстрый старт — Шаг 4: Ждём генерацию</h1>
+        <div class="content">
+            <div class="left-col">
+                <div class="info-block">
+                    <div class="info-title">Что происходит</div>
+                    <div class="info-text">
+                        JARVIS создаёт задачу в Manus API, анализирует сайт компании и генерирует 7 документов.
+                    </div>
+                </div>
+                <div class="info-block">
+                    <div class="info-title">Время ожидания</div>
+                    <div class="time-box">⏱ 15-30 минут</div>
+                    <div class="info-text" style="font-size: 18px; margin-top: 8px; color: #666;">
+                        Зависит от сложности анализа
+                    </div>
+                </div>
+                <div class="info-block">
+                    <div class="info-title">Управление</div>
+                    <div class="info-text">
+                        Можно отменить в любой момент кнопкой <b>❌ Отмена</b>
+                    </div>
+                </div>
+            </div>
+            <div class="right-col">
+                <div class="info-title" style="margin-bottom: 12px;">Этапы прогресса</div>
+                <ul class="stages-list">
+                    <li class="stage-item">
+                        <span class="stage-percent">25%</span>
+                        <span class="stage-name">🔍 Анализ сайта</span>
+                    </li>
+                    <li class="stage-item">
+                        <span class="stage-percent">50%</span>
+                        <span class="stage-name">📊 Сбор данных</span>
+                    </li>
+                    <li class="stage-item">
+                        <span class="stage-percent">75%</span>
+                        <span class="stage-name">📝 Генерация документов</span>
+                    </li>
+                    <li class="stage-item">
+                        <span class="stage-percent">100%</span>
+                        <span class="stage-name">✅ Финализация</span>
+                    </li>
+                </ul>
+                <div class="image-container">
+                    <img src="/home/ubuntu/upload/search_images/xUzeJ7esTzn6.jpg" alt="Progress Bar">
+                </div>
+                <div class="cancel-note">
+                    Визуальный прогресс-бар отображается в чате бота
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Быстрый старт — Шаг 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #0052CC;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px 40px 16px 40px; /* reduced bottom padding to prevent overflow */
+        }
+        .step-number {
+            font-size: 140px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -5px;
+            opacity: 0.9;
+        }
+        .step-label {
+            font-size: 24px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            padding-top: 20px;
+        }
+        .main-content {
+            width: 75%;
+            padding: 60px 80px 16px 80px; /* keep top padding for title, reduce bottom */
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+        ol {
+            list-style: none;
+            counter-reset: item;
+            margin-bottom: 30px; /* slightly reduced */
+        }
+        li {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 16px; /* slightly reduced */
+            padding-left: 40px;
+            position: relative;
+            line-height: 1.4;
+        }
+        li::before {
+            content: counter(item);
+            counter-increment: item;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 700;
+            color: #FF4500;
+        }
+        .highlight {
+            color: #0052CC;
+            font-weight: 600;
+            background: rgba(0,82,204,0.1);
+            padding: 2px 8px;
+        }
+        .menu-section h2 {
+            font-size: 20px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px; /* reduced gap */
+            margin-bottom: 28px;
+        }
+        .menu-item {
+            background: #FFFFFF;
+            border: 2px solid #1A1A1A;
+            padding: 14px; /* reduced padding */
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #1A1A1A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .tip {
+            margin-top: auto;
+            border-left: 4px solid #FF4500;
+            padding-left: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        .tip strong {
+            color: #1A1A1A;
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="sidebar">
+            <div class="step-number">01</div>
+            <div class="step-label">Быстрый старт</div>
+        </div>
+        <div class="main-content">
+            <h1>Запуск бота в Telegram</h1>
+            <ol>
+                <li>Откройте Telegram на любом устройстве</li>
+                <li>Найдите бота: <span class="highlight">@bimar_presale_bot</span></li>
+                <li>Нажмите кнопку <strong>Start</strong> или введите <span class="highlight">/start</span></li>
+                <li>Вы увидите главное меню с 5 кнопками</li>
+            </ol>
+            
+            <div class="menu-section">
+                <h2>Главное меню</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">🚀 Новый анализ</div>
+                    <div class="menu-item">📊 Мои задачи</div>
+                    <div class="menu-item">⚙️ Настройки</div>
+                    <div class="menu-item">📈 Статус</div>
+                    <div class="menu-item">📖 Справка</div>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <strong>Совет:</strong>
+                Сохраните бота в избранное (Pinned Chats) для быстрого доступа.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

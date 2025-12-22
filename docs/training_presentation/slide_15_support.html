@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Техническая поддержка</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+        }
+        .content {
+            display: flex;
+            gap: 80px;
+            flex: 1;
+        }
+        .contact-col {
+            flex: 0 0 40%;
+            background: #FFFFFF;
+            padding: 40px;
+            border-top: 8px solid #FF4500; /* Orange for attention/support */
+            display: flex;
+            flex-direction: column;
+        }
+        .resources-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .contact-item {
+            margin-bottom: 40px;
+        }
+        .contact-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .contact-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0052CC;
+            word-break: break-word;
+        }
+        .hours {
+            margin-top: auto;
+            font-size: 18px;
+            color: #555;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .resource-block {
+            background: #FFFFFF;
+            padding: 30px;
+            border-left: 6px solid #0052CC;
+        }
+        .resource-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 12px;
+        }
+        .resource-list {
+            list-style: none;
+        }
+        .resource-list li {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            padding-left: 24px;
+            position: relative;
+        }
+        .resource-list li::before {
+            content: "→";
+            color: #FF4500;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .bug-report-steps {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .step {
+            flex: 1;
+            background: #F9F9F9;
+            padding: 15px;
+            font-size: 16px;
+            color: #555;
+            border: 1px solid #E0E0E0;
+        }
+        .step strong {
+            display: block;
+            color: #1A1A1A;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Техническая поддержка</h1>
+        
+        <div class="content">
+            <div class="contact-col">
+                <h2>Прямая связь</h2>
+                
+                <div class="contact-item">
+                    <div class="contact-label">Telegram Support</div>
+                    <div class="contact-value">@bimar_support</div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-label">Email</div>
+                    <div class="contact-value">help@bimar.system</div>
+                </div>
+                
+                <div class="hours">
+                    <strong>Режим работы:</strong><br>
+                    Пн-Пт: 09:00 — 19:00 (МСК)<br>
+                    Сб-Вс: Только критические сбои
+                </div>
+            </div>
+            
+            <div class="resources-col">
+                <div class="resource-block">
+                    <div class="resource-title">База знаний</div>
+                    <ul class="resource-list">
+                        <li>Инструкция пользователя (PDF)</li>
+                        <li>Раздел <strong>📖 Справка</strong> в боте</li>
+                        <li>Видео-уроки на корпоративном портале</li>
+                    </ul>
+                </div>
+                
+                <div class="resource-block" style="border-left-color: #1A1A1A;">
+                    <div class="resource-title">Как сообщить об ошибке</div>
+                    <div class="bug-report-steps">
+                        <div class="step">
+                            <strong>1. Скриншот</strong>
+                            Сделайте снимок экрана с ошибкой
+                        </div>
+                        <div class="step">
+                            <strong>2. Описание</strong>
+                            Что вы делали перед ошибкой?
+                        </div>
+                        <div class="step">
+                            <strong>3. Отправка</strong>
+                            Пришлите в чат поддержки
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

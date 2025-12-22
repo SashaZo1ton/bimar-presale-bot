@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка статуса</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            /* keep top padding (title spacing) but reduce bottom padding to save height */
+            padding: 60px 60px 30px 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            /* reduced bottom margin to fit within 720px without changing top padding */
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+        .content-wrapper {
+            display: flex;
+            gap: 80px;
+            flex: 1;
+        }
+        .text-col {
+            flex: 0 0 35%;
+            display: flex;
+            flex-direction: column;
+        }
+        .intro {
+            font-size: 20px;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 40px;
+            border-left: 4px solid #FF4500;
+            padding-left: 20px;
+        }
+        .steps {
+            list-style: none;
+        }
+        .steps li {
+            margin-bottom: 30px;
+        }
+        .step-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .step-desc {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .visual-col {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-card {
+            width: 100%;
+            background: #FFFFFF;
+            border: 4px solid #1A1A1A;
+            padding: 0;
+        }
+        .status-header {
+            background: #1A1A1A;
+            color: #FFFFFF;
+            padding: 20px 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+        .status-body {
+            padding: 30px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .metric-label {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .status-ok {
+            color: #0052CC;
+            background: rgba(0, 82, 204, 0.1);
+            padding: 6px 12px;
+        }
+        .status-neutral {
+            color: #555;
+            background: #EEE;
+            padding: 6px 12px;
+        }
+        .system-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 4px solid #0052CC;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Проверка статуса системы</h1>
+        
+        <div class="content-wrapper">
+            <div class="text-col">
+                <div class="intro">
+                    Используйте меню <strong>📈 Статус</strong> для диагностики здоровья системы перед началом важной работы.
+                </div>
+                <ul class="steps">
+                    <li>
+                        <span class="step-title">1. Запуск диагностики</span>
+                        <span class="step-desc">Нажмите кнопку в меню. Бот проверит соединение со всеми сервисами.</span>
+                    </li>
+                    <li>
+                        <span class="step-title">2. Анализ отчета</span>
+                        <span class="step-desc">Убедитесь, что API доступен и очередь задач не перегружена.</span>
+                    </li>
+                    <li>
+                        <span class="step-title">3. Решение проблем</span>
+                        <span class="step-desc">Если статус красный — обратитесь в техподдержку.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="visual-col">
+                <div class="status-card">
+                    <div class="status-header">
+                        <span>SYSTEM DIAGNOSTIC</span>
+                        <span>● LIVE</span>
+                    </div>
+                    <div class="status-body">
+                        <div class="metric-row">
+                            <span class="metric-label">JARVIS CORE</span>
+                            <span class="metric-value status-ok">ONLINE</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">MANUS API</span>
+                            <span class="metric-value status-ok">CONNECTED</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">DATABASE</span>
+                            <span class="metric-value status-ok">SYNCED</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">TASK QUEUE</span>
+                            <span class="metric-value status-neutral">IDLE (0)</span>
+                        </div>
+                        
+                        <div class="system-info">
+                            <span>VER: 3.0.1-STABLE</span>
+                            <span>UPTIME: 99.9%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Шаг 2: Ввод URL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        h2 {
+            font-size: 32px;
+            font-weight: 400;
+            color: #555;
+            margin-bottom: 50px;
+        }
+        .content {
+            display: flex;
+            gap: 60px;
+            flex: 1;
+        }
+        .process-col {
+            flex: 0 0 40%;
+        }
+        .examples-col {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 40px;
+            border-left: 4px solid #0052CC;
+        }
+        .step {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .step-num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
+            background: #1A1A1A;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .step-text {
+            font-size: 24px;
+            color: #333;
+            line-height: 1.4;
+            padding-top: 4px;
+        }
+        .example-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-family: 'Courier New', monospace; /* Monospace for URLs */
+            font-size: 22px;
+        }
+        .example-row:last-child {
+            border-bottom: none;
+        }
+        .url {
+            color: #333;
+        }
+        .status {
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+        }
+        .status.valid {
+            color: #0052CC;
+        }
+        .status.invalid {
+            color: #FF4500;
+        }
+        .note {
+            margin-top: auto;
+            padding-top: 20px;
+            font-size: 18px;
+            color: #666;
+            border-top: 2px solid #D1D1D1;
+        }
+        .note strong {
+            color: #FF4500;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Быстрый старт — Шаг 2</h1>
+        <h2>Введите URL сайта компании</h2>
+        
+        <div class="content">
+            <div class="process-col">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Нажмите <strong>🚀 Новый анализ</strong></div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Бот попросит ссылку на сайт</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Отправьте URL в чат</div>
+                </div>
+                
+                <div class="note">
+                    <strong>Важно:</strong> JARVIS анализирует открытую информацию с сайта — убедитесь, что адрес правильный.
+                </div>
+            </div>
+            
+            <div class="examples-col">
+                <div style="margin-bottom: 20px; font-family: 'Inter', sans-serif; font-weight: 700; color: #1A1A1A; font-size: 20px;">Примеры ввода:</div>
+                
+                <div class="example-row">
+                    <span class="url">https://gazprom-neft.ru</span>
+                    <span class="status valid">✅ Верно</span>
+                </div>
+                <div class="example-row">
+                    <span class="url">gazprom-neft.ru</span>
+                    <span class="status valid">✅ Верно</span>
+                </div>
+                <div class="example-row">
+                    <span class="url">www.gazprom-neft.ru</span>
+                    <span class="status valid">✅ Верно</span>
+                </div>
+                <div class="example-row">
+                    <span class="url" style="color: #999;">gazprom-neft</span>
+                    <span class="status invalid">❌ Ошибка</span>
+                </div>
+                <div class="example-row">
+                    <span class="url" style="color: #999;">ООО Газпром Нефть</span>
+                    <span class="status invalid">❌ Ошибка</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

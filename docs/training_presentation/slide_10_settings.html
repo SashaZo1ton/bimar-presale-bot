@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 60px 0 60px; /* No bottom padding, footer handles it */
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 50px;
+            letter-spacing: -1px;
+        }
+        .settings-grid {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+            margin-bottom: 60px;
+        }
+        .setting-card {
+            flex: 1;
+            background: #FFFFFF;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            border-top: 8px solid #0052CC;
+        }
+        .setting-card:nth-child(2) {
+            border-top-color: #1A1A1A;
+        }
+        .setting-card:nth-child(3) {
+            border-top-color: #FF4500;
+        }
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .desc {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            min-height: 50px;
+        }
+        .details-list {
+            list-style: none;
+            margin-top: auto;
+        }
+        .details-list li {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.4;
+        }
+        .details-list li::before {
+            content: "•";
+            color: #0052CC;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .access-bar {
+            background: #1A1A1A;
+            margin: 0 -60px; /* Extend to edges */
+            padding: 40px 60px;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .access-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF4500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .access-steps {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: 20px;
+        }
+        .arrow {
+            color: #666;
+        }
+        b {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Настройки: Персонализация JARVIS</h1>
+        
+        <div class="settings-grid">
+            <div class="setting-card">
+                <h2>⚡ Quick Mode</h2>
+                <p class="desc">Быстрый режим для тех, кто ценит время.</p>
+                <ul class="details-list">
+                    <li>Пропускает выбор цели</li>
+                    <li>Сразу запускает анализ</li>
+                    <li>Цель по умолчанию задается в меню</li>
+                </ul>
+            </div>
+            
+            <div class="setting-card">
+                <h2>🔔 Уведомления</h2>
+                <p class="desc">Будьте в курсе прогресса выполнения задач.</p>
+                <ul class="details-list">
+                    <li><b>Включено:</b> Бот напишет, когда готово</li>
+                    <li><b>Выключено:</b> Проверяйте статус вручную</li>
+                </ul>
+            </div>
+            
+            <div class="setting-card">
+                <h2>🌐 Язык</h2>
+                <p class="desc">Локализация интерфейса и документов.</p>
+                <ul class="details-list">
+                    <li><b>Текущий:</b> Русский</li>
+                    <li>Полный перевод интерфейса</li>
+                    <li>Документы на русском языке</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="access-bar">
+            <div class="access-title">Как открыть настройки</div>
+            <div class="access-steps">
+                <span>1. Нажмите <b>⚙️ Настройки</b></span>
+                <span class="arrow">→</span>
+                <span>2. Выберите параметр</span>
+                <span class="arrow">→</span>
+                <span>3. Сохранится автоматически</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

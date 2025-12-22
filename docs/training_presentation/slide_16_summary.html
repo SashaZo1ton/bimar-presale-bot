@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Итоги</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            /* keep top padding for title consistency, reduce bottom padding to save height */
+            padding: 60px 60px 20px 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            max-width: 800px;
+        }
+        .content {
+            display: flex;
+            gap: 40px; /* slightly tighter layout */
+            flex: 1;
+        }
+        .text-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .benefits-list {
+            list-style: none;
+        }
+        .benefit-item {
+            margin-bottom: 18px; /* reduced spacing between points */
+            padding-left: 30px;
+            border-left: 4px solid #0052CC;
+        }
+        .benefit-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+        .benefit-desc {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.4;
+        }
+        .cta-box {
+            background: #0052CC;
+            color: #FFFFFF;
+            padding: 20px; /* reduced padding to save vertical space */
+            margin-top: 20px;
+        }
+        .cta-label {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        .cta-link {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Inter', monospace; /* Monospace feel for bot name */
+        }
+        .visual-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px; /* reduced gap between images */
+        }
+        .image-top {
+            height: 240px; /* slightly reduced */
+            width: 100%;
+            overflow: hidden;
+        }
+        .image-bottom {
+            height: 130px; /* reduced to prevent overflow */
+            width: 80%; /* keep it slightly smaller for dynamic layout */
+            overflow: hidden;
+            align-self: flex-end; /* Align to right/bottom visually */
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Начните использовать JARVIS сегодня</h1>
+        
+        <div class="content">
+            <div class="text-col">
+                <ul class="benefits-list">
+                    <li class="benefit-item">
+                        <div class="benefit-title">Скорость вместо рутины</div>
+                        <div class="benefit-desc">Сократите время подготовки с 3 часов до 15 минут. Освободите время для общения с клиентом.</div>
+                    </li>
+                    <li class="benefit-item">
+                        <div class="benefit-title">Качество экспертного уровня</div>
+                        <div class="benefit-desc">Получайте 7 профессиональных документов, которые не стыдно показать топ-менеджменту.</div>
+                    </li>
+                    <li class="benefit-item" style="border-left-color: #FF4500;">
+                        <div class="benefit-title">Рост конверсии</div>
+                        <div class="benefit-desc">Приходите на встречи подготовленными, говорите о болях клиента и закрывайте сделки быстрее.</div>
+                    </li>
+                </ul>
+                
+                <div class="cta-box">
+                    <div class="cta-label">Активировать сейчас</div>
+                    <div class="cta-link">@bimar_presale_bot</div>
+                </div>
+            </div>
+            
+            <div class="visual-col">
+                <div class="image-top">
+                    <img src="/home/ubuntu/upload/search_images/OMUYLvIAUVLe.jpg" alt="Success">
+                </div>
+                <div class="image-bottom">
+                    <img src="/home/ubuntu/upload/search_images/pOuH7RH3Yron.jpg" alt="Teamwork">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

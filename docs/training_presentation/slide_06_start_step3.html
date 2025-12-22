@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Шаг 3: Выбор цели</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .subtitle {
+            font-size: 20px;
+            color: #555555;
+            margin-bottom: 20px; /* reduced to save height */
+            max-width: 800px;
+            line-height: 1.5;
+            border-left: 4px solid #FF4500;
+            padding-left: 20px;
+        }
+        .grid {
+            display: flex;
+            gap: 24px; /* reduced gap */
+        }
+        .column {
+            flex: 1;
+            background-color: #FFFFFF;
+            padding: 20px; /* reduced padding */
+            display: flex;
+            flex-direction: column;
+            border-top: 8px solid #0052CC;
+        }
+        .column:nth-child(2) {
+            border-top-color: #1A1A1A;
+        }
+        .column:nth-child(3) {
+            border-top-color: #FF4500;
+        }
+        h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 16px; /* slightly reduced to tighten */
+            min-height: 60px; /* Align content */
+            display: flex;
+            align-items: center;
+        }
+        .description {
+            font-size: 18px;
+            line-height: 1.5;
+            color: #333333;
+            margin-bottom: 24px; /* reduced */
+            flex-grow: 1;
+        }
+        .docs-block {
+            background-color: #F9F9F9;
+            padding: 12px; /* reduced */
+            border-left: 2px solid #D1D1D1;
+        }
+        .docs-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #777;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .docs-list {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0052CC;
+            line-height: 1.4;
+        }
+        .icon {
+            margin-right: 12px;
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Быстрый старт — Шаг 3: Выбор цели</h1>
+        <div class="subtitle">
+            Выбор цели влияет на акценты в документах — выбирайте в зависимости от этапа переговоров.
+        </div>
+        
+        <div class="grid">
+            <!-- Column 1 -->
+            <div class="column">
+                <h3><span class="icon">🎯</span> Вводная / квалификация</h3>
+                <div class="description">
+                    Первая встреча с компанией.<br>
+                    Знакомство, выявление болей и понимание потребностей.
+                </div>
+                <div class="docs-block">
+                    <div class="docs-label">Ключевые документы</div>
+                    <div class="docs-list">
+                        • Досье на клиента<br>
+                        • Питч для встречи
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div class="column">
+                <h3><span class="icon">🚀</span> Согласование пилота</h3>
+                <div class="description">
+                    Обсуждение конкретного пилотного проекта.<br>
+                    Согласование объёма работ (scope) и сроков.
+                </div>
+                <div class="docs-block">
+                    <div class="docs-label">Ключевые документы</div>
+                    <div class="docs-list">
+                        • ТЗ на пилот<br>
+                        • Экономика сделки<br>
+                        • Решения BIMAR
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3 -->
+            <div class="column">
+                <h3><span class="icon">💼</span> ТКП (Предложение)</h3>
+                <div class="description">
+                    Подготовка коммерческого предложения.<br>
+                    Финальное согласование условий сотрудничества.
+                </div>
+                <div class="docs-block">
+                    <div class="docs-label">Ключевые документы</div>
+                    <div class="docs-list">
+                        • Решения BIMAR<br>
+                        • Экономика сделки<br>
+                        • Питч для клиента
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

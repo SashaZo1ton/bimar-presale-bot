@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>7 документов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+        .content {
+            display: flex;
+            gap: 40px;
+            height: 100%;
+        }
+        .table-wrapper {
+            flex: 2;
+        }
+        .image-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+        th {
+            text-align: left;
+            padding: 12px 0;
+            border-bottom: 2px solid #0052CC;
+            color: #0052CC;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 14px 0;
+            border-bottom: 1px solid #D1D1D1;
+            color: #333333;
+            vertical-align: top;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .doc-num {
+            font-weight: 700;
+            color: #FF4500;
+            width: 40px;
+        }
+        .doc-name {
+            font-weight: 600;
+            color: #1A1A1A;
+            width: 30%;
+        }
+        .doc-desc {
+            color: #555555;
+        }
+        .doc-target {
+            font-size: 14px;
+            color: #0052CC;
+            font-weight: 600;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .image-box {
+            width: 100%;
+            height: 400px;
+            background: #FFFFFF;
+            overflow: hidden;
+            position: relative;
+        }
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .caption {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            border-left: 2px solid #FF4500;
+            padding-left: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>7 документов для каждого анализа</h1>
+        <div class="content">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Документ</th>
+                            <th>Содержание</th>
+                            <th style="text-align:right">Для кого</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="doc-num">01</td>
+                            <td class="doc-name">Досье на клиента</td>
+                            <td class="doc-desc">Профиль, боли, ЛПР, точки входа</td>
+                            <td class="doc-target">Менеджер</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">02</td>
+                            <td class="doc-name">Решения BIMAR</td>
+                            <td class="doc-desc">Карта use cases с приоритизацией</td>
+                            <td class="doc-target">Менеджер + Клиент</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">03</td>
+                            <td class="doc-name">Экономика сделки</td>
+                            <td class="doc-desc">ROI, окупаемость, фин. эффект</td>
+                            <td class="doc-target">Фин. директор</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">04</td>
+                            <td class="doc-name">Пилот ТЗ</td>
+                            <td class="doc-desc">Цели, scope, KPI, этапы</td>
+                            <td class="doc-target">Проектный менеджер</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">05</td>
+                            <td class="doc-name">ЛПР</td>
+                            <td class="doc-desc">Stakeholder map, влияние</td>
+                            <td class="doc-target">Менеджер</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">06</td>
+                            <td class="doc-name">Питч для клиента</td>
+                            <td class="doc-desc">Презентация: боли → решение</td>
+                            <td class="doc-target">Встреча</td>
+                        </tr>
+                        <tr>
+                            <td class="doc-num">07</td>
+                            <td class="doc-name">Верификация</td>
+                            <td class="doc-desc">Источники информации</td>
+                            <td class="doc-target">Контроль</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="image-wrapper">
+                <div class="image-box">
+                    <img src="/home/ubuntu/upload/search_images/eR1ikJKjgORj.jpg" alt="Business Documents">
+                </div>
+                <div class="caption">
+                    Все документы готовы к использованию на встречах и в переговорах.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

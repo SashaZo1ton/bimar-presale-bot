@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проблема и Решение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            padding: 60px 60px 40px;
+            background-color: #FFFFFF;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            letter-spacing: -1px;
+        }
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+        }
+        .column {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+        .column-left {
+            background-color: #F2F2F2;
+            color: #333333;
+            border-right: 1px solid #E0E0E0;
+        }
+        .column-right {
+            background-color: #0052CC;
+            color: #FFFFFF;
+        }
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        .column-left h2 { color: #FF4500; }
+        .column-right h2 { color: #FFFFFF; }
+        
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .column-right .list-item {
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .time {
+            font-weight: 700;
+            font-size: 24px;
+        }
+        .total {
+            margin-top: auto;
+            font-size: 36px;
+            font-weight: 700;
+            padding-top: 30px;
+        }
+        .column-left .total { color: #1A1A1A; }
+        .column-right .total { color: #FFFFFF; }
+        
+        .highlight {
+            color: #FF4500;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <h1>Почему JARVIS экономит время вашей команде?</h1>
+        </div>
+        <div class="content-wrapper">
+            <div class="column column-left">
+                <h2>Было: Ручная работа</h2>
+                <div class="list-item">
+                    <span>Анализ сайта</span>
+                    <span class="time">45 мин</span>
+                </div>
+                <div class="list-item">
+                    <span>Поиск ЛПР</span>
+                    <span class="time">30 мин</span>
+                </div>
+                <div class="list-item">
+                    <span>Создание презентации</span>
+                    <span class="time">60 мин</span>
+                </div>
+                <div class="list-item">
+                    <span>Расчёт ROI</span>
+                    <span class="time">40 мин</span>
+                </div>
+                <div class="total">Итого: ~3 часа</div>
+            </div>
+            <div class="column column-right">
+                <h2>Стало: JARVIS v3.0</h2>
+                <div class="list-item">
+                    <span>Генерация пакета</span>
+                    <span class="time">15-30 мин</span>
+                </div>
+                <div class="list-item">
+                    <span>Готовых документов</span>
+                    <span class="time">7 шт</span>
+                </div>
+                <div class="list-item">
+                    <span>Экономия времени</span>
+                    <span class="time">90%</span>
+                </div>
+                <div class="total">Итого: <span style="color:#FFD700">15-30 мин</span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Контакты и ресурсы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background-color: #F2F2F2;
+            display: flex;
+            flex-direction: column;
+            padding: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 80px;
+            letter-spacing: -1px;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            flex: 1;
+        }
+        .col {
+            display: flex;
+            flex-direction: column;
+        }
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052CC;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #0052CC;
+            padding-bottom: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+        .contact-block {
+            margin-bottom: 50px;
+        }
+        .contact-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .contact-value {
+            font-size: 40px;
+            font-weight: 700;
+            color: #1A1A1A;
+            letter-spacing: -1px;
+        }
+        .resource-list {
+            list-style: none;
+        }
+        .resource-item {
+            font-size: 24px;
+            color: #333;
+            padding: 20px 0;
+            border-bottom: 1px solid #D1D1D1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .resource-item:first-child {
+            padding-top: 0;
+        }
+        .arrow {
+            color: #FF4500;
+            font-weight: 700;
+        }
+        .footer {
+            margin-top: auto;
+            padding-top: 40px;
+            font-size: 16px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1A1A1A;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1>Контакты и ресурсы</h1>
+        
+        <div class="content-grid">
+            <div class="col">
+                <h2>Прямой доступ</h2>
+                
+                <div class="contact-block">
+                    <div class="contact-label">Telegram Bot</div>
+                    <div class="contact-value">@bimar_presale_bot</div>
+                </div>
+                
+                <div class="contact-block">
+                    <div class="contact-label">Служба поддержки</div>
+                    <div class="contact-value">help@bimar.system</div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <h2>Полезные материалы</h2>
+                <ul class="resource-list">
+                    <li class="resource-item">
+                        База знаний (Wiki)
+                        <span class="arrow">↗</span>
+                    </li>
+                    <li class="resource-item">
+                        Видео-инструкции
+                        <span class="arrow">↗</span>
+                    </li>
+                    <li class="resource-item">
+                        Корпоративный портал
+                        <span class="arrow">↗</span>
+                    </li>
+                    <li class="resource-item">
+                        Чат отдела продаж
+                        <span class="arrow">↗</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="brand">BIMAR SYSTEM</div>
+            <div>© 2025 Все права защищены</div>
+        </div>
+    </div>
+</body>
+</html>
