@@ -95,6 +95,14 @@ DOCUMENT_TYPES = {
         "icon": "📊",
         "description": "Презентация 10-12 слайдов"
     },
+    "dashboard": {
+        "id": "dashboard",
+        "name": "08_Дашборд",
+        "filename": "08_Дашборд.pdf",
+        "format": "pdf",
+        "icon": "📈",
+        "description": "Визуализация решений и экономики"
+    },
     "verification": {
         "id": "verification",
         "name": "07_Верификация",
