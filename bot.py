@@ -49,8 +49,8 @@ DOCUMENT_TYPES = {
     "dossier": {
         "id": "dossier",
         "name": "01_Досье_на_клиента",
-        "filename": "01_Досье_на_клиента.docx",
-        "format": "docx",
+        "filename": "01_Досье_на_клиента.pdf",
+        "format": "pdf",
         "icon": "📋",
         "description": "Профиль компании, боли, ЛПР",
         "mandatory": True
@@ -74,8 +74,8 @@ DOCUMENT_TYPES = {
     "sow": {
         "id": "sow",
         "name": "04_Пилот_ТЗ",
-        "filename": "04_Пилот_ТЗ.docx",
-        "format": "docx",
+        "filename": "04_Пилот_ТЗ.pdf",
+        "format": "pdf",
         "icon": "📝",
         "description": "Техзадание на пилот 90 дней"
     },
@@ -98,8 +98,8 @@ DOCUMENT_TYPES = {
     "verification": {
         "id": "verification",
         "name": "07_Верификация",
-        "filename": "07_Верификация.docx",
-        "format": "docx",
+        "filename": "07_Верификация.pdf",
+        "format": "pdf",
         "icon": "✅",
         "description": "Чек-лист готовности пресейла"
     }
@@ -927,8 +927,11 @@ def msg_access_denied() -> str:
 
 async def create_manus_task_stage1(url: str, goal: str, constraints: str) -> Optional[str]:
     """Этап 1: Создаёт задачу для анализа компании и генерации ТОЛЬКО досье"""
+    from document_prompts import get_document_prompt
     
-    prompt = f"""═══════════════════════════════════════════════════════════════
+    prompt = get_document_prompt("dossier", url, goal, constraints)
+    if not prompt:
+        prompt = f"""═══════════════════════════════════════════════════════════════
 JARVIS v3.0 — ЭТАП 1: АНАЛИЗ КОМПАНИИ И СОЗДАНИЕ ДОСЬЕ
 ═══════════════════════════════════════════════════════════════
 
@@ -1202,6 +1205,34 @@ JARVIS v3.0 — ЭТАП 3: ГЕНЕРАЦИЯ ПРЕСЕЙЛ-ПАКЕТА
         return None
 
 # Для обратной совместимости — старая функция вызывает Этап 1
+async def create_manus_task_single_doc(prompt: str) -> Optional[str]:
+    """Создаёт задачу для генерации одного документа"""
+    try:
+        headers = {
+            "Authorization": f"Bearer {MANUS_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "prompt": prompt,
+            "projectId": MANUS_PROJECT_ID
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(f"{MANUS_API_URL}/tasks", headers=headers, json=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    task_id = data.get("id")
+                    logger.info(f"Single doc task created: '{task_id}'")
+                    return task_id
+                else:
+                    error_text = await response.text()
+                    logger.error(f"Failed to create single doc task: {response.status} - {error_text}")
+                    return None
+    except Exception as e:
+        logger.error(f"Exception in create_manus_task_single_doc: {e}")
+        return None
+
 async def create_manus_task(url: str, goal: str, constraints: str) -> Optional[str]:
     """Обратная совместимость — вызывает Этап 1"""
     return await create_manus_task_stage1(url, goal, constraints)
@@ -1652,7 +1683,9 @@ async def callback_confirm_docs(callback: CallbackQuery, state: FSMContext):
     await process_selected_documents(callback.message, state, callback.from_user.id)
 
 async def process_selected_documents(message: Message, state: FSMContext, user_id: int):
-    """ЭТАП 3: Генерация выбранных документов"""
+    """ЭТАП 3: Генерация выбранных документов (по одному)"""
+    from document_prompts import get_document_prompt
+    
     data = await state.get_data()
     url = data.get("url")
     domain = data.get("domain")
@@ -1660,71 +1693,62 @@ async def process_selected_documents(message: Message, state: FSMContext, user_i
     constraints = data.get("constraints", "-")
     selected_docs = data.get("selected_docs", [])
     
-    status_msg = await message.answer(msg_processing_start())
+    status_msg = await message.answer(f"🚀 Запуск генерации {len(selected_docs)} документов...")
     start_time = datetime.now()
     
-    # Создаём задачу для генерации выбранных документов
-    task_id = await create_manus_task_stage3(url, goal, constraints, selected_docs)
+    all_artifacts = []
     
-    if not task_id:
-        stats["errors"] += 1
-        await status_msg.edit_text(msg_error("Не удалось создать задачу в Manus"))
-        await state.clear()
-        await message.answer("Используйте меню для повторной попытки.", reply_markup=get_main_keyboard())
-        return
+    # Генерируем каждый документ отдельно
+    for idx, doc_id in enumerate(selected_docs, 1):
+        doc_info = DOCUMENT_TYPES.get(doc_id, {})
+        doc_name = doc_info.get("name", doc_id)
+        
+        await status_msg.edit_text(f"📝 Генерация {idx}/{len(selected_docs)}: {doc_name}...")
+        
+        # Получаем промпт для конкретного документа
+        prompt = get_document_prompt(doc_id, url, goal, constraints)
+        if not prompt:
+            logger.error(f"No prompt for document {doc_id}")
+            continue
+        
+        # Создаём задачу для этого документа
+        task_id = await create_manus_task_single_doc(prompt)
+        
+        if not task_id:
+            logger.error(f"Failed to create task for {doc_id}")
+            continue
+        
+        # Ожидаем завершения генерации
+        doc_start = datetime.now()
+        while True:
+            if (datetime.now() - doc_start).total_seconds() > TASK_TIMEOUT:
+                logger.error(f"Timeout for {doc_id}")
+                break
+            
+            task_status = await get_task_status(task_id)
+            status = task_status.get("status", "running")
+            
+            if status == "completed":
+                # Извлекаем файлы из этой задачи
+                for output_item in task_status.get("output", []):
+                    content = output_item.get("content", [])
+                    if isinstance(content, list):
+                        for item in content:
+                            if item.get("type") == "output_file" and item.get("fileUrl"):
+                                all_artifacts.append({
+                                    "url": item.get("fileUrl"),
+                                    "name": item.get("fileName", "file")
+                                })
+                break
+            elif status == "failed":
+                logger.error(f"Task failed for {doc_id}")
+                break
+            
+            await asyncio.sleep(POLLING_INTERVAL)
     
-    iteration = 0
-    stages = ["Генерация документов", "Формирование пакета", "Финализация"]
-    
-    while True:
-        elapsed = datetime.now() - start_time
-        elapsed_sec = int(elapsed.total_seconds())
-        elapsed_min = elapsed_sec // 60
-        elapsed_sec_display = elapsed_sec % 60
-        
-        if elapsed_sec > TASK_TIMEOUT:
-            stats["errors"] += 1
-            await status_msg.edit_text(msg_error("Превышено время ожидания"))
-            await state.clear()
-            await message.answer("Используйте меню для повторной попытки.", reply_markup=get_main_keyboard())
-            return
-        
-        task_status = await get_task_status(task_id)
-        status = task_status.get("status", "running")
-        
-        if status == "completed":
-            break
-        elif status == "failed":
-            stats["errors"] += 1
-            await status_msg.edit_text(msg_error("Задача завершилась с ошибкой"))
-            await state.clear()
-            await message.answer("Используйте меню для повторной попытки.", reply_markup=get_main_keyboard())
-            return
-        
-        iteration += 1
-        stage_idx = min(iteration // 10, len(stages) - 1)
-        percent = min(iteration * 3, 95)
-        
-        try:
-            await status_msg.edit_text(msg_processing_progress(elapsed_min, elapsed_sec_display, stages[stage_idx], percent))
-        except:
-            pass
-        
-        await asyncio.sleep(POLLING_INTERVAL)
-    
+    # Все документы сгенерированы
     stats["successful"] += 1
-    
-    # Извлекаем файлы
-    artifacts = []
-    for output_item in task_status.get("output", []):
-        content = output_item.get("content", [])
-        if isinstance(content, list):
-            for item in content:
-                if item.get("type") == "output_file" and item.get("fileUrl"):
-                    artifacts.append({
-                        "url": item.get("fileUrl"),
-                        "name": item.get("fileName", "file")
-                    })
+    artifacts = all_artifacts
     
     logger.info(f"Found {len(artifacts)} files to send")
     files_sent = 0
