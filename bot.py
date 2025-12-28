@@ -844,6 +844,7 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 MANUS_API_KEY = os.getenv("MANUS_API_KEY")
 MANUS_PROJECT_ID = os.getenv("MANUS_PROJECT_ID", "YghG6cpo3udE8p2gcYzQfP")
 MANUS_BASE_URL = os.getenv("MANUS_BASE_URL", "https://api.manus.ai")
+MANUS_API_URL = MANUS_BASE_URL  # Алиас для совместимости
 ALLOWED_USER_IDS = os.getenv("ALLOWED_USER_IDS", "")
 QUICK_MODE_DEFAULT = os.getenv("QUICK_MODE", "0") == "1"
 POLLING_INTERVAL = int(os.getenv("POLLING_INTERVAL", "10"))
