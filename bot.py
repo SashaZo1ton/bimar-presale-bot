@@ -90,8 +90,8 @@ DOCUMENT_TYPES = {
     "presentation": {
         "id": "presentation",
         "name": "06_Питч_для_клиента",
-        "filename": "06_Питч_для_клиента.pptx",
-        "format": "pptx",
+        "filename": "06_Питч_для_клиента.pdf",
+        "format": "pdf",
         "icon": "📊",
         "description": "Презентация 10-12 слайдов"
     },
