@@ -33,6 +33,9 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
 
+# Импорт промптов для документов
+from document_prompts import get_document_prompt, BIMAR_KNOWLEDGE_BASE
+
 # Определение состояний FSM для двухэтапного процесса
 class PresaleStates(StatesGroup):
     """ФСМ состояния для пресейл-бота"""
@@ -935,7 +938,6 @@ def msg_access_denied() -> str:
 
 async def create_manus_task_stage1(url: str, goal: str, constraints: str) -> Optional[str]:
     """Этап 1: Создаёт задачу для анализа компании и генерации ТОЛЬКО досье"""
-    from document_prompts import get_document_prompt
     
     prompt = get_document_prompt("dossier", url, goal, constraints)
     if not prompt:
@@ -1692,7 +1694,6 @@ async def callback_confirm_docs(callback: CallbackQuery, state: FSMContext):
 
 async def process_selected_documents(message: Message, state: FSMContext, user_id: int):
     """ЭТАП 3: Генерация выбранных документов (по одному)"""
-    from document_prompts import get_document_prompt
     
     data = await state.get_data()
     url = data.get("url")
