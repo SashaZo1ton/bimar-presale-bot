@@ -1937,7 +1937,7 @@ async def create_manus_task_single_doc(prompt: str) -> Optional[str]:
     """Создаёт задачу для генерации одного документа"""
     try:
         headers = {
-            "Authorization": f"Bearer {MANUS_API_KEY}",
+            "API_KEY": MANUS_API_KEY,
             "Content-Type": "application/json"
         }
         
@@ -1947,11 +1947,16 @@ async def create_manus_task_single_doc(prompt: str) -> Optional[str]:
         }
         
         async with aiohttp.ClientSession() as session:
-            async with session.post(f"{MANUS_API_URL}/tasks", headers=headers, json=payload) as response:
+            async with session.post(
+                f"{MANUS_BASE_URL}/v1/tasks",
+                headers=headers,
+                json=payload,
+                timeout=aiohttp.ClientTimeout(total=60)
+            ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    task_id = data.get("id")
-                    logger.info(f"Single doc task created: '{task_id}'")
+                    task_id = data.get("task_id")
+                    logger.info(f"Single doc task created: {data}")
                     return task_id
                 else:
                     error_text = await response.text()
