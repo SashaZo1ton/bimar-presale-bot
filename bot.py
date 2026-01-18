@@ -1762,7 +1762,11 @@ JARVIS v3.0 — ЭТАП 1: АНАЛИЗ КОМПАНИИ И СОЗДАНИЕ Д
         "API_KEY": MANUS_API_KEY,
         "Content-Type": "application/json"
     }
-    payload = {"prompt": prompt, "projectId": MANUS_PROJECT_ID}
+    payload = {
+        "prompt": prompt,
+        "projectId": MANUS_PROJECT_ID,
+        "agentProfile": "manus-1.6-max"
+    }
     
     try:
         async with aiohttp.ClientSession() as session:
@@ -1915,7 +1919,11 @@ JARVIS v3.0 — ЭТАП 3: ГЕНЕРАЦИЯ ПРЕСЕЙЛ-ПАКЕТА
         "API_KEY": MANUS_API_KEY,
         "Content-Type": "application/json"
     }
-    payload = {"prompt": prompt, "projectId": MANUS_PROJECT_ID}
+    payload = {
+        "prompt": prompt,
+        "projectId": MANUS_PROJECT_ID,
+        "agentProfile": "manus-1.6-max"
+    }
     
     try:
         async with aiohttp.ClientSession() as session:
@@ -1943,7 +1951,8 @@ async def create_manus_task_single_doc(prompt: str) -> Optional[str]:
         
         payload = {
             "prompt": prompt,
-            "projectId": MANUS_PROJECT_ID
+            "projectId": MANUS_PROJECT_ID,
+            "agentProfile": "manus-1.6-max"
         }
         
         async with aiohttp.ClientSession() as session:
